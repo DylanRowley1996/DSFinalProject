@@ -43,7 +43,7 @@ public class BookieController {
       if (result) {
          session.setAttribute("Auth", authInfo);
       }
-      model.addAttribute("result", result);
+      model.addAttribute("result", authInfo.getEmail());
       return response.encodeRedirectURL("/index");
    }
 }
