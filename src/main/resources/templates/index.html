@@ -5,10 +5,10 @@
     <title>Index</title>
 </head>
 <body>
-<h1 style="display: none"> <span th:text="${result}"></span></h1>
-<h1>Welcome to the COMP30020 Bookie Company<br> <span  th:text="${session.Auth}?${session.Auth.getEmail()}:'(Sorry you are not logged in)'" ></span> </h1>
+<h1> <span th:text="${result}"></span></h1>
+<h1>Welcome to the COMP30020 Bookie Company<br> <span  th:text="${session.Auth!=null}?${session.Auth.getEmail()}:'(Sorry you are not logged in)'" ></span> </h1>
 <a th:href="@{/register}">Register Now!<br></a>
 <a th:href="@{/login}" th:if="${session.Auth==null}">Log-In<br></a>
-<a th:href="@{/loginOut}" th:unless="${session.Auth==null}">Logout</a>
+<a th:href="@{/logout}" th:unless="${session.Auth==null}">Logout</a>
 </body>
 </html>

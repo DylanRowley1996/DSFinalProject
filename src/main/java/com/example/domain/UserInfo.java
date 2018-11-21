@@ -8,14 +8,25 @@ public class UserInfo {
    private String password;
    private String email;
 
-   public UserInfo(String username, int age, String password, String email) {
+   public void setUsername(String username) {
       this.username = username;
-      this.age = age;
-      this.password = password;
-      this.email = email;
    }
 
-   public UserInfo() {}
+   public void setAge(int age) {
+      this.age = age;
+   }
+
+   public void setBalance(float balance) {
+      this.balance = balance;
+   }
+
+   public void setPassword(String password) {
+      this.password = password;
+   }
+
+   public void setEmail(String email) {
+      this.email = email;
+   }
 
    public String getEmail() {
       return email;

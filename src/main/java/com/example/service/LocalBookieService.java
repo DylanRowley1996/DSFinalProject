@@ -34,10 +34,33 @@ public class LocalBookieService implements BookieService {
    }
 
    /*
+   This is a method to get the username by using email
+    */
+   @Override
+   public String getUsername(AuthInfo authInfo){
+
+      MongoClient mongo = new MongoClient("localhost", 27017);
+      DB db = mongo.getDB("usersdb");
+      DBCollection table = db.getCollection("user");
+
+      /**** Find the database with the same info****/
+      BasicDBObject searchQuery = new BasicDBObject();
+      searchQuery.append("email", authInfo.getEmail());
+      DBCursor cursor = table.find(searchQuery);
+
+      while (cursor.hasNext()) {
+         mongo.close();
+         return (String) cursor.next().get("username");
+      }
+      mongo.close();
+      return null;
+   }
+
+   /*
    This is used to register and put user info into the database
     */
    @Override
-   public void registryUser(UserInfo userInfo){
+   public String registryUser(UserInfo userInfo){
 
       MongoClient mongo = new MongoClient("localhost", 27017);
       DB db = mongo.getDB("usersdb");
@@ -53,6 +76,7 @@ public class LocalBookieService implements BookieService {
       document.put("balance", 0);
       table.insert(document);
       mongo.close();
+      return userInfo.getUsername();
    }
 
    /*
