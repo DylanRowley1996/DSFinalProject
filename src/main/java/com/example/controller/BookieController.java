@@ -54,7 +54,7 @@ public class BookieController {
                               // Connect this to the "user" in register html file
                               @ModelAttribute(value = "user") UserInfo userInfo,
                               HttpServletResponse response) {
-      String info = "Sorry the email has been registered. Please try again.";
+      String info = "Sorry the email you entered has been registered. Please try again.";
       if (!lbs.ifExist(userInfo)) {
          info = lbs.registryUser(userInfo);
       }

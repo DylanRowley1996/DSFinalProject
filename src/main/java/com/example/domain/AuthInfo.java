@@ -6,7 +6,6 @@ public class AuthInfo {
 
    private String email;
    private String password;
-   private String uniqueID;
 
    public void setEmail(String email) {
       this.email = email;
@@ -24,9 +23,9 @@ public class AuthInfo {
       return password;
    }
 
+
+   //Use to generate random uniqueID, abandoned now
    /*
-         Use to generate random uniqueID
-          */
    public static String getRandomString(int length) {
       String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       Random random = new Random();
@@ -38,4 +37,5 @@ public class AuthInfo {
       }
       return sb.toString();
    }
+   */
 }

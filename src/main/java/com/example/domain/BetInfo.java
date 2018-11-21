@@ -4,12 +4,18 @@ public class BetInfo {
 
    private float amount;
    private String acountEmail;
-   private String uniqueBetID;
 
    public BetInfo(float amount, String acountEmail) {
       this.amount = amount;
       this.acountEmail = acountEmail;
-      uniqueBetID = AuthInfo.getRandomString(10);
+   }
+
+   public void setAmount(float amount) {
+      this.amount = amount;
+   }
+
+   public void setAcountEmail(String acountEmail) {
+      this.acountEmail = acountEmail;
    }
 
    public float getAmount() {
@@ -20,7 +26,4 @@ public class BetInfo {
       return acountEmail;
    }
 
-   public String getUniqueBetID() {
-      return uniqueBetID;
-   }
 }
