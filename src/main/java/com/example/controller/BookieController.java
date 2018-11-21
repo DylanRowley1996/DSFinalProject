@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
+/*
+The bookie controller.
+@author Qinyuan Zhang
+@date 21/11/2018
+ */
 @Controller
 public class BookieController {
 
