@@ -1,13 +1,16 @@
 package com.example.controller;
 
 import com.example.domain.UserInfo;
-import com.example.service.LocalBookieService;
+import com.example.service.CentralBookieService;
 import com.example.domain.AuthInfo;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.jms.Destination;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -20,7 +23,7 @@ The bookie controller.
 public class BookieController {
 
    @Autowired
-   private LocalBookieService lbs;
+   private CentralBookieService lbs;
 
    /*
    Redirect to the index
@@ -97,5 +100,17 @@ public class BookieController {
       //Delete the Auth in the session
       session.removeAttribute("Auth");
       return "index";
+   }
+
+   /*
+   The GET method to check certain bookie
+    */
+   @RequestMapping(value = "/bet123", method = RequestMethod.GET)
+   public String checkBookie(Model model, HttpSession session) throws InterruptedException {
+      Destination destination = new ActiveMQQueue("in.bet123");
+      AuthInfo authInfo = (AuthInfo) session.getAttribute("Auth");
+      lbs.sendMessage(destination, authInfo.getEmail());
+      model.addAttribute("result", lbs.getUsername(authInfo));
+      return "bet123";
    }
 }

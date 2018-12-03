@@ -1,35 +1,39 @@
 package com.example.service;
 
+import com.example.dao.CentralBookieDB;
 import com.example.domain.AuthInfo;
 import com.example.domain.BookieService;
 import com.example.domain.UserInfo;
 import com.mongodb.*;
 import com.example.domain.BetInfo;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import javax.jms.Destination;
+
 @Service
-public class LocalBookieService implements BookieService {
+public class CentralBookieService implements BookieService {
+
+   CentralBookieDB cbd = new CentralBookieDB();
+
+   @Resource
+   private JmsMessagingTemplate jmsTemplate;
    /*
    This is used to define whether the client have correct email and password
     */
    @Override
    public boolean login(AuthInfo authInfo) {
-
-      MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("usersdb");
-      DBCollection table = db.getCollection("user");
-
       /**** Find whether the database has same info****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", authInfo.getEmail());
       searchQuery.append("password", authInfo.getPassword());
-      DBCursor cursor = table.find(searchQuery);
+      DBCursor cursor = cbd.getTable().find(searchQuery);
 
       while (cursor.hasNext()) {
-         mongo.close();
          return true;
       }
-      mongo.close();
       return false;
    }
 
@@ -39,20 +43,14 @@ public class LocalBookieService implements BookieService {
    @Override
    public String getUsername(AuthInfo authInfo){
 
-      MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("usersdb");
-      DBCollection table = db.getCollection("user");
-
       /**** Find the database with the same info****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", authInfo.getEmail());
-      DBCursor cursor = table.find(searchQuery);
+      DBCursor cursor = cbd.getTable().find(searchQuery);
 
       while (cursor.hasNext()) {
-         mongo.close();
          return (String) cursor.next().get("username");
       }
-      mongo.close();
       return null;
    }
 
@@ -61,11 +59,6 @@ public class LocalBookieService implements BookieService {
     */
    @Override
    public String registryUser(UserInfo userInfo){
-
-      MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("usersdb");
-      DBCollection table = db.getCollection("user");
-
       /**** Insert ****/
       // Create a document to store key and value
       BasicDBObject document = new BasicDBObject();
@@ -74,8 +67,7 @@ public class LocalBookieService implements BookieService {
       document.put("email", userInfo.getEmail());
       document.put("password", userInfo.getPassword());
       document.put("balance", 0);
-      table.insert(document);
-      mongo.close();
+      cbd.getTable().insert(document);
       return userInfo.getUsername();
    }
 
@@ -84,34 +76,24 @@ public class LocalBookieService implements BookieService {
     */
    @Override
    public boolean ifExist(UserInfo userInfo) {
-      MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("usersdb");
-      DBCollection table = db.getCollection("user");
-
       /**** Find whether there are existing users****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", userInfo.getEmail());
-      DBCursor cursor = table.find(searchQuery);
+      DBCursor cursor = cbd.getTable().find(searchQuery);
 
       while (cursor.hasNext()) {
-         mongo.close();
          return true;
       }
-      mongo.close();
       return false;
    }
 
    @Override
    public boolean bet(BetInfo betInfo) {
-      MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("usersdb");
-      DBCollection table = db.getCollection("user");
-
       /**** Update ****/
       // search document where name="mkyong" and update it with new values
       BasicDBObject query = new BasicDBObject();
       query.put("email", betInfo.getAcountEmail());
-      DBCursor cursor = table.find(query);
+      DBCursor cursor = cbd.getTable().find(query);
 
       while (cursor.hasNext()) {
          int a = (int)cursor.next().get("balance");
@@ -128,34 +110,36 @@ public class LocalBookieService implements BookieService {
          BasicDBObject updateObj = new BasicDBObject();
          updateObj.put("$set", newDocument);
 
-         table.update(query, updateObj);
-         mongo.close();
+         cbd.getTable().update(query, updateObj);
          return true;
       }
-      mongo.close();
       return false;
    }
 
    @Override
    public int getCurrentBalance(AuthInfo authInfo) {
-      MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("usersdb");
-      DBCollection table = db.getCollection("user");
-
       /**** Find whether there are existing users****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", authInfo.getEmail());
-      DBCursor cursor = table.find(searchQuery);
+      DBCursor cursor = cbd.getTable().find(searchQuery);
 
       while (cursor.hasNext()) {
          int a = (int)cursor.next().get("balance");
-         mongo.close();
          return a;
       }
-      mongo.close();
       return 0;
    }
 
+   // Send message
+   public void sendMessage(Destination destination, String email) {
+      jmsTemplate.convertAndSend(destination, email);
+   }
+
+   // Get return message
+   @JmsListener(destination = "out.bet123")
+   public void consumerMessage(String text) {
+      //TODO: return message from certain bookie
+   }
 
 }
 
