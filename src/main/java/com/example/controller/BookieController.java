@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.domain.UserInfo;
+import com.example.service.Bet123BookieService;
 import com.example.service.CentralBookieService;
 import com.example.domain.AuthInfo;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -23,7 +24,9 @@ The bookie controller.
 public class BookieController {
 
    @Autowired
-   private CentralBookieService lbs;
+   private CentralBookieService cbs;
+   @Autowired
+   private Bet123BookieService b1bs;
 
    /*
    Redirect to the index
@@ -58,8 +61,10 @@ public class BookieController {
                               @ModelAttribute(value = "user") UserInfo userInfo,
                               HttpServletResponse response) {
       String info = "Sorry the email you entered has been registered. Please try again.";
-      if (!lbs.ifExist(userInfo)) {
-         info = lbs.registryUser(userInfo);
+      if (!cbs.ifExist(userInfo)) {
+         info = cbs.registryUser(userInfo);
+         // Generate user in bet123's database
+         b1bs.createUser(userInfo.getEmail());
       }
       // Return the username to the index page
       model.addAttribute("result", info);
@@ -83,12 +88,12 @@ public class BookieController {
                            HttpServletResponse response,
                            HttpSession session) {
       System.out.println(authInfo.getEmail() + authInfo.getPassword());
-      Boolean result = lbs.login(authInfo);
+      Boolean result = cbs.login(authInfo);
       // If match the database, add the session
       if (result) {
          session.setAttribute("Auth", authInfo);
       }
-      model.addAttribute("result", lbs.getUsername(authInfo));
+      model.addAttribute("result", cbs.getUsername(authInfo));
       return response.encodeRedirectURL("/index");
    }
 
@@ -109,8 +114,9 @@ public class BookieController {
    public String checkBookie(Model model, HttpSession session) throws InterruptedException {
       Destination destination = new ActiveMQQueue("in.bet123");
       AuthInfo authInfo = (AuthInfo) session.getAttribute("Auth");
-      lbs.sendMessage(destination, authInfo.getEmail());
-      model.addAttribute("result", lbs.getUsername(authInfo));
+      cbs.sendMessage(destination, authInfo.getEmail());
+      model.addAttribute("result", cbs.getUsername(authInfo));
+      model.addAttribute("balance", b1bs.getBalance(authInfo.getEmail()));
       return "bet123";
    }
 }

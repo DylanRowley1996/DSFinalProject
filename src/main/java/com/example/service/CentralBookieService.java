@@ -12,14 +12,18 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.jms.Destination;
+import java.util.regex.Pattern;
 
 @Service
 public class CentralBookieService implements BookieService {
 
+   // Create the connection with the database
    CentralBookieDB cbd = new CentralBookieDB();
 
+   // Create the jms template
    @Resource
    private JmsMessagingTemplate jmsTemplate;
+
    /*
    This is used to define whether the client have correct email and password
     */
@@ -59,6 +63,10 @@ public class CentralBookieService implements BookieService {
     */
    @Override
    public String registryUser(UserInfo userInfo){
+      String emailPattrn = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
+      if (!Pattern.matches(emailPattrn, userInfo.getEmail())) {
+         return "Wrong email format. Please try again!";
+      }
       /**** Insert ****/
       // Create a document to store key and value
       BasicDBObject document = new BasicDBObject();
@@ -68,7 +76,7 @@ public class CentralBookieService implements BookieService {
       document.put("password", userInfo.getPassword());
       document.put("balance", 0);
       cbd.getTable().insert(document);
-      return userInfo.getUsername();
+      return "Successfully register, please login!";
    }
 
    /*
