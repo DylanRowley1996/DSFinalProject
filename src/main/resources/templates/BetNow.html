@@ -10,9 +10,9 @@
 <h1>Bet now in <span th:text="${bookie}"></span>!</h1>
 <form th:action="@{/bet-in-bet123}" th:object="${authinfo}" method="post">
     <label for="eventName">Please select the events you want to check: </label>
-    <select class="form-control" name="id">
+    <select class="form-control" name="eid">
         <option>Select Events</option>
-        <option  th:each="list:${session.list}" th:value="${list.id}" th:text="${list.eventName}"></option>
+        <option  th:each="list:${session.list}" th:value="${list}" th:text="${list}"></option>
     </select>
     <input type="submit" value="submit">
 </form>

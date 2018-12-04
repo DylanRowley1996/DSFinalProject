@@ -1,7 +1,6 @@
 package com.example.service;
 
 import com.example.dao.Bet123DB;
-import com.example.domain.EventInfo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import org.springframework.jms.annotation.JmsListener;
@@ -22,7 +21,7 @@ public class Bet123BookieService {
    // Create a string to store user's email
    private String UserEmail = null;
    // Create a string list to store the events
-   private List<EventInfo> eventsList = null;
+   private List<String> eventsList = null;
 
    // The jms listener to get the email from the central bookie
    @JmsListener(destination = "email.bookies")
@@ -66,12 +65,11 @@ public class Bet123BookieService {
    }
 
    @JmsListener(destination = "events.bookies")
-   public void getEvents(List<EventInfo> events) {
-      System.out.println("Get the events: " + events);
+   public void getEvents(List<String> events) {
       eventsList = events;
    }
 
-   public List<EventInfo> getEventsList() {
+   public List<String> getEventsList() {
       return eventsList;
    }
 }

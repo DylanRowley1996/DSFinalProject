@@ -1,8 +1,6 @@
 package com.example.controller;
 
-import com.example.domain.EventInfo;
 import com.example.service.Bet123BookieService;
-import com.example.service.EventOrganiserService;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +28,8 @@ public class Bet123Controller {
    @RequestMapping(value = "/bet123", method = RequestMethod.GET)
    public String checkBookie(Model model) {
       model.addAttribute("balance", b1bs.getBalance());
+      Destination destination = new ActiveMQQueue("events.eventOrganiser");
+      b1bs.sendToGetEvents(destination, true);
       return "bet123";
    }
 
@@ -39,9 +39,8 @@ public class Bet123Controller {
    @RequestMapping(value = "/bet-in-bet123", method = RequestMethod.GET)
    public String betinbet123get(Model model, HttpSession session) {
       model.addAttribute("bookie", "Bet123");
-      Destination destination = new ActiveMQQueue("events.eventOrganiser");
-      b1bs.sendToGetEvents(destination, true);
-      List<EventInfo> eventsList = b1bs.getEventsList();
+      List<String> eventsList = b1bs.getEventsList();
+      System.out.println("Controller get list: " + eventsList);
       session.setAttribute("list", eventsList);
       return "BetNow";
    }

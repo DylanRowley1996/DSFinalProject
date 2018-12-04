@@ -1,7 +1,6 @@
 package com.example.service;
 
 import com.example.dao.EventOrganiserDB;
-import com.example.domain.EventInfo;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import org.springframework.jms.annotation.JmsListener;
@@ -24,22 +23,16 @@ public class EventOrganiserService {
    // Get info from bookie companies amd send back all the events' info
    @JmsListener(destination = "events.eventOrganiser")
    @SendTo("events.bookies")
-   public List<EventInfo> receiveAndSendBackEvents(Boolean getEvents) {
+   public List<String> receiveAndSendBackEvents(Boolean getEvents) {
       if (getEvents) {
          System.out.println("Bookies want to get events from Event Organiser");
       }
       // Create a list first
-      List<EventInfo> events = new ArrayList<>();
-      // Create a new event info
-      EventInfo eventInfo = new EventInfo();
+      List<String> events = new ArrayList<>();
       /**** Find all the events and store in a list****/
       DBCursor cursor = eod.getTable().find();
-      int id = 0;
       for (DBObject object : cursor) {
-         eventInfo.setEventName((String)object.get("name"));
-         eventInfo.setId(id);
-         id ++;
-         events.add(eventInfo);
+         events.add((String)object.get("name"));
       }
       return events;
    }
