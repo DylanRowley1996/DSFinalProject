@@ -18,11 +18,7 @@ import java.util.regex.Pattern;
 public class CentralBookieService implements BookieService {
 
    // Create the connection with the database
-   CentralBookieDB cbd = new CentralBookieDB();
-
-   // Create the jms template
-   @Resource
-   private JmsMessagingTemplate jmsTemplate;
+   private CentralBookieDB cbd = new CentralBookieDB();
 
    /*
    This is used to define whether the client have correct email and password
@@ -138,8 +134,12 @@ public class CentralBookieService implements BookieService {
       return 0;
    }
 
+   // Create the jms template to send info to bookie companies
+   @Resource
+   private JmsMessagingTemplate jmsTemplate;
+
    // Send message
-   public void sendMessage(Destination destination, String email) {
+   public void sendEmail(Destination destination, String email) {
       jmsTemplate.convertAndSend(destination, email);
    }
 

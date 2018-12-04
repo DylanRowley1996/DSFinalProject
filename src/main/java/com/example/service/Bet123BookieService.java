@@ -1,11 +1,16 @@
 package com.example.service;
 
 import com.example.dao.Bet123DB;
+import com.example.domain.EventInfo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import javax.jms.Destination;
+import java.util.List;
 
 /*
 @author Qinyuan Zhang
@@ -14,37 +19,59 @@ import org.springframework.stereotype.Service;
 @Service
 public class Bet123BookieService {
 
-   // The jms listener
-   @JmsListener(destination = "in.bet123")
-   @SendTo("out.bet123")
-   public String receiveQueue(String email) {
-      System.out.println("Consumer get email: " + email);
-      return "return message: " + email;
+   // Create a string to store user's email
+   private String UserEmail = null;
+   // Create a string list to store the events
+   private List<EventInfo> eventsList = null;
+
+   // The jms listener to get the email from the central bookie
+   @JmsListener(destination = "email.bookies")
+   public void receiveEmail(String email) {
+      UserEmail = email;
+      System.out.println("Consumer get email: " + UserEmail);
    }
 
    // Create the connection with the database
-   Bet123DB b1d = new Bet123DB();
-
-   // Create user in bet123
-   public void createUser(String email) {
-      /**** Insert ****/
-      // Create a document to store key and value
-      BasicDBObject document = new BasicDBObject();
-      document.put("username", email);
-      document.put("balance", 0);
-      b1d.getTable().insert(document);
-   }
+   private Bet123DB b1d = new Bet123DB();
 
    // Get the user's balance
-   public int getBalance(String email) {
+   public double getBalance() {
+      System.out.println("Getting balance... ...");
       /**** Find whether the database has same info****/
       BasicDBObject searchQuery = new BasicDBObject();
-      searchQuery.append("email", email);
+      searchQuery.append("email", UserEmail);
       DBCursor cursor = b1d.getTable().find(searchQuery);
 
       while (cursor.hasNext()) {
-         return (Integer) cursor.next().get("balance");
+         return Double.valueOf(cursor.next().get("balance").toString());
       }
-      return 0;
+
+      // If there are no users in this bookie's database, create a new user here
+      /**** Insert ****/
+      // Create a document to store key and value
+      BasicDBObject document = new BasicDBObject();
+      document.put("email", UserEmail);
+      document.put("balance", 0.0);
+      b1d.getTable().insert(document);
+      return 0.0;
+   }
+
+   // The send message to get events
+   // Create the jms template
+   @Resource
+   private JmsMessagingTemplate jmsTemplate;
+
+   public void sendToGetEvents(Destination destination, Boolean getEvents) {
+      jmsTemplate.convertAndSend(destination, getEvents);
+   }
+
+   @JmsListener(destination = "events.bookies")
+   public void getEvents(List<EventInfo> events) {
+      System.out.println("Get the events: " + events);
+      eventsList = events;
+   }
+
+   public List<EventInfo> getEventsList() {
+      return eventsList;
    }
 }

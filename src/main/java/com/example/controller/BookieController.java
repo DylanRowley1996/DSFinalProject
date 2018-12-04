@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.domain.UserInfo;
-import com.example.service.Bet123BookieService;
 import com.example.service.CentralBookieService;
 import com.example.domain.AuthInfo;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -25,8 +24,6 @@ public class BookieController {
 
    @Autowired
    private CentralBookieService cbs;
-   @Autowired
-   private Bet123BookieService b1bs;
 
    /*
    Redirect to the index
@@ -63,8 +60,6 @@ public class BookieController {
       String info = "Sorry the email you entered has been registered. Please try again.";
       if (!cbs.ifExist(userInfo)) {
          info = cbs.registryUser(userInfo);
-         // Generate user in bet123's database
-         b1bs.createUser(userInfo.getEmail());
       }
       // Return the username to the index page
       model.addAttribute("result", info);
@@ -94,6 +89,9 @@ public class BookieController {
          session.setAttribute("Auth", authInfo);
       }
       model.addAttribute("result", cbs.getUsername(authInfo));
+      // Send the email to all the bookie companies
+      Destination destination = new ActiveMQQueue("email.bookies");
+      cbs.sendEmail(destination, authInfo.getEmail());
       return response.encodeRedirectURL("/index");
    }
 
@@ -107,16 +105,4 @@ public class BookieController {
       return "index";
    }
 
-   /*
-   The GET method to check certain bookie
-    */
-   @RequestMapping(value = "/bet123", method = RequestMethod.GET)
-   public String checkBookie(Model model, HttpSession session) throws InterruptedException {
-      Destination destination = new ActiveMQQueue("in.bet123");
-      AuthInfo authInfo = (AuthInfo) session.getAttribute("Auth");
-      cbs.sendMessage(destination, authInfo.getEmail());
-      model.addAttribute("result", cbs.getUsername(authInfo));
-      model.addAttribute("balance", b1bs.getBalance(authInfo.getEmail()));
-      return "bet123";
-   }
 }

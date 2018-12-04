@@ -9,6 +9,7 @@
     <span th:text="${result}"></span></h1>
 <h1>Welcome to the Bet123!<br> <span  th:text="${session.Auth!=null}?${session.Auth.getEmail()}:'(Sorry you are not logged in)'" ></span></h1>
 <p>Your balance in Bet123: &euro; <span th:text="${balance}"></span></p>
-<a th:href="@{/bet_in_bet123}" th:unless="${session.Auth==null}">Bet in Bet123!<br></a>
+<a th:href="@{/bet-in-bet123}" th:unless="${session.Auth==null}">Bet in Bet123!<br><br><br></a>
+<a href = "http://localhost:8080/index">Bring me back to the homepage!</a>
 </body>
 </html>
