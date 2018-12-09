@@ -13,7 +13,7 @@ public class EventOrganiserDB {
    public DBCollection getTable () {
       MongoClient mongo = new MongoClient("localhost", 27017);
       DB db = mongo.getDB("eventOrganiserdb");
-      DBCollection table = db.getCollection("events");
+      DBCollection table = db.getCollection("matches");
 
       return table;
    }

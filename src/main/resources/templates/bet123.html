@@ -9,7 +9,11 @@
     <span th:text="${result}"></span></h1>
 <h1>Welcome to the Bet123!<br> <span  th:text="${session.Auth!=null}?${session.Auth.getEmail()}:'(Sorry you are not logged in)'" ></span></h1>
 <p>Your balance in Bet123: &euro; <span th:text="${balance}"></span></p>
-<a th:href="@{/bet-in-bet123}" th:unless="${session.Auth==null}">Bet in Bet123!<br><br><br></a>
+<h3>Bet in Bet123!<br></h3>
+<a th:href="@{/bet-in-bet123/HorseRace}" th:unless="${session.Auth==null}">Horse Race<br></a>
+<a th:href="@{/bet-in-bet123/Football}" th:unless="${session.Auth==null}">Football<br></a>
+<a th:href="@{/bet-in-bet123/Rugby}" th:unless="${session.Auth==null}">Rugby<br></a>
+<a th:href="@{/bet-in-bet123/Basketball}" th:unless="${session.Auth==null}">Basketball<br><br><br></a>
 <a href = "http://localhost:8080/index">Bring me back to the homepage!</a>
 </body>
 </html>

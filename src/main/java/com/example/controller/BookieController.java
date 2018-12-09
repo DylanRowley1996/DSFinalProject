@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /*
-The bookie controller.
+The central bookie controller.
 @author Qinyuan Zhang
 @date 21/11/2018
  */
@@ -82,14 +82,20 @@ public class BookieController {
                            @ModelAttribute(value = "authinfo") AuthInfo authInfo,
                            HttpServletResponse response,
                            HttpSession session) {
+      // Print out the email and password info
       System.out.println(authInfo.getEmail() + authInfo.getPassword());
+      // Use the method in service to login
       Boolean result = cbs.login(authInfo);
-      // If match the database, add the session
+      // If match the database, add authInfo into the session
       if (result) {
          session.setAttribute("Auth", authInfo);
       }
       model.addAttribute("result", cbs.getUsername(authInfo));
       // Send the email to all the bookie companies
+      /*
+      Notice that we need to send out and get info before the next step
+      otherwise it will not work
+      */
       Destination destination = new ActiveMQQueue("email.bookies");
       cbs.sendEmail(destination, authInfo.getEmail());
       return response.encodeRedirectURL("/index");

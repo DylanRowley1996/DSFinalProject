@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.jms.Destination;
 import java.util.List;
+import java.util.Map;
 
 /*
 @author Qinyuan Zhang
@@ -20,8 +21,6 @@ public class Bet123BookieService {
 
    // Create a string to store user's email
    private String UserEmail = null;
-   // Create a string list to store the events
-   private List<String> eventsList = null;
 
    // The jms listener to get the email from the central bookie
    @JmsListener(destination = "email.bookies")
@@ -56,20 +55,23 @@ public class Bet123BookieService {
    }
 
    // The send message to get events
+   // Create a string list to store the events
+   private Map<String, String> matchesList = null;
    // Create the jms template
    @Resource
    private JmsMessagingTemplate jmsTemplate;
 
-   public void sendToGetEvents(Destination destination, Boolean getEvents) {
-      jmsTemplate.convertAndSend(destination, getEvents);
+   public void sendToGetEvents(Destination destination, Boolean getMatches) {
+      jmsTemplate.convertAndSend(destination, getMatches);
    }
 
-   @JmsListener(destination = "events.bookies")
-   public void getEvents(List<String> events) {
-      eventsList = events;
+   @JmsListener(destination = "matches.bookies")
+   public void getEvents(Map<String, String> matches) {
+      // System.out.println("Bet123 Service get Map: " + matches);
+      matchesList = matches;
    }
 
-   public List<String> getEventsList() {
-      return eventsList;
+   public Map<String, String> getEventsList() {
+      return matchesList;
    }
 }
