@@ -15,6 +15,7 @@ public class Bet123DB {
       DB db = mongo.getDB("bet123db");
       DBCollection table = db.getCollection("user");
 
+
       return table;
    }
 }
