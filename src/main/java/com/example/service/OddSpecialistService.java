@@ -13,16 +13,14 @@ import java.util.Map;
 */
 @Service
 public class OddSpecialistService {
-   // A basic method to generate football odds
-   public Map<String, Double> generateFootballOdds(String team1, String team2,
-                                   double team1win, double team2win) {
+   // A basic method to generate odds
+   public List<Double> generateFootballOdds(List<Double> probabilities) {
       // The odds generating method we use is simple
       // Use 1 divide the win rate, then times 0.9
-      Map<String, Double> odds = new HashMap<>();
-      odds.put(team1, (1 / team1win) * 0.9);
-      odds.put(team2, (1 / team2win) * 0.9);
-      odds.put("draw", (1 / (1 - team1win - team2win) * 0.9));
-
+      List<Double> odds = new ArrayList<>();
+      for (Double probability : probabilities) {
+         odds.add((1 / probability) * 0.9);
+      }
       return odds;
    }
 }
