@@ -9,6 +9,8 @@ public class PopulateDB {
 
     private MongoClient mongo;
 
+    private String footballDataFilePath = "/resources/odds/FootBallData.csv";
+
     public PopulateDB(String hostname, int port){
         mongo = new MongoClient(hostname, port);
     }
@@ -16,8 +18,6 @@ public class PopulateDB {
     public void populateFootballTeams(String hostname, int port){
         DB db = this.mongo.getDB("eventOrganiserDB");
         db.createCollection( "Football Teams", new BasicDBObject());
-
-
     }
 
 
