@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.dao.Bet123DB;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import org.springframework.jms.annotation.JmsListener;
@@ -66,9 +68,10 @@ public class Bet123BookieService {
    }
 
    @JmsListener(destination = "matches.bookies")
-   public void getEvents(Map<String, String> matches) {
+   public void getEvents(String matchesJson) {
       // System.out.println("Bet123 Service get Map: " + matches);
-      matchesList = matches;
+      Gson gson = new Gson();
+      matchesList = gson.fromJson(matchesJson, new TypeToken<Map<String, String>>(){}.getType());
    }
 
    public Map<String, String> getEventsList() {
