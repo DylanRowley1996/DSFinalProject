@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dao.EventOrganiserDB;
+import com.google.gson.Gson;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
@@ -26,7 +27,7 @@ public class EventOrganiserService {
    // Get info from bookie companies amd send back all the matches' info
    @JmsListener(destination = "matches.eventOrganiser")
    @SendTo("matches.bookies")
-   public Map<String, String> receiveAndSendBackEvents(Boolean getMatches) {
+   public String receiveAndSendBackEvents(Boolean getMatches) {
       if (getMatches) {
          System.out.println("Bookies want to get matches from Event Organiser");
       }
@@ -38,6 +39,8 @@ public class EventOrganiserService {
          matches.put((String)object.get("info"), (String)object.get("event"));
       }
       // System.out.println("Event Organiser send map: " + matches);
-      return matches;
+      Gson gson = new Gson();
+      String matchesJson = gson.toJson(matches);
+      return matchesJson;
    }
 }
