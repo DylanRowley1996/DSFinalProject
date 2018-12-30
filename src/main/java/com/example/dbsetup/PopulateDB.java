@@ -2,10 +2,8 @@ package com.example.dbsetup;
 
 import com.mongodb.*;
 import org.bson.types.ObjectId;
-
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 public class PopulateDB {
 
@@ -26,6 +24,7 @@ public class PopulateDB {
     public void populateDatabase(){
         populateFootballTable();
         populateHorseRacingTable();
+        populateBasketballTable();
     }
 
     private void populateFootballTable(){
@@ -91,8 +90,9 @@ public class PopulateDB {
     }
 
     private void populateBasketballTable(){
+
         //Get the collection to work with.
-        DBCollection basketBallTeams = db.getCollection("BasketBall");
+        DBCollection basketballTeams = db.getCollection("BasketBall");
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(nbaDataFile));
@@ -104,12 +104,14 @@ public class PopulateDB {
                 String[] fields = st.split(",");
 
                 //Create a DBObject with the obtained fields.
-                DBObject horse = new BasicDBObject("_id", new ObjectId())
-                        .append("horseName", fields[0])
-                        .append("probWin", fields[1]);
+                DBObject basketballMatch = new BasicDBObject("_id", new ObjectId())
+                        .append("team1", fields[0])
+                        .append("team2", fields[1])
+                        .append("prob1Win", fields[2])
+                        .append("prob2Win", fields[3]);
 
                 // Insert football match into table.
-                horseRaces.insert(horse);
+                basketballTeams.insert(basketballMatch);
             }
 
         } catch (IOException e) {
