@@ -1,4 +1,4 @@
-# Program to extract data from /data/Historical-NBA-Performance.csv and
+# Program to extract data from Historical-NBA-Performance.csv and
 # calculate an averages of win/loss ratios over the years.
 
 
@@ -45,13 +45,24 @@ def main():
                 average_winloss = total/len(list)
                 nba_winloss_avg[key] = average_winloss
 
-            # Write win/loss average to CSV file.
-            for key, value in nba_winloss_avg.items():
-                nba_data_writer.writerow([key, value])
+            i = 0
+            j = 0
+
+            for team1, prob1 in nba_winloss_avg.items():
+                for team2, prob2 in nba_winloss_avg.items():
+                    if j >= i+1:
+                        total = prob1+prob2
+                        prob1Win = prob1/total
+                        prob2Win = prob2/total
+                        nba_data_writer.writerow([team1, team2, prob1Win, prob2Win])
+                    else:
+                        j = j+1
+                j = 0
+                i = i+1
+
 
             nba_csv_file.close()
             nba_data.close()
-
 
 if __name__ == '__main__':
     main()
