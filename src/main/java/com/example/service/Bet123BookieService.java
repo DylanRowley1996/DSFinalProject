@@ -6,12 +6,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.jms.Destination;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +81,7 @@ public class Bet123BookieService {
       return matchesList;
    }
 
-   public void placeOrder(BetInfo betInfo) {
+   public List<BetInfo> placeOrder(BetInfo betInfo) {
       // Create a document to store the order
       BasicDBObject document = new BasicDBObject();
       document.put("match", betInfo.getMatch());
@@ -87,5 +89,23 @@ public class Bet123BookieService {
       document.put("email", betInfo.getEmail());
       document.put("selection", betInfo.getSelection());
       b1d.getOrderTable().insert(document);
+
+      /**** Find whether the rest orders and return****/
+      BasicDBObject searchQuery = new BasicDBObject();
+      searchQuery.append("email", betInfo.getEmail());
+      DBCursor cursor = b1d.getOrderTable().find(searchQuery);
+
+      List<BetInfo> betInfoList = new ArrayList<>();
+      while (cursor.hasNext()) {
+         Object c = cursor.next();
+         BetInfo newBetInfo = new BetInfo();
+         newBetInfo.setMatch((String) ((DBObject) c).get("match"));
+         newBetInfo.setAmount((Double) ((DBObject) c).get("amount"));
+         newBetInfo.setSelection((String) ((DBObject) c).get("selection"));
+         newBetInfo.setEmail((String) ((DBObject) c).get("email"));
+         betInfoList.add(newBetInfo);
+      }
+
+      return betInfoList;
    }
 }

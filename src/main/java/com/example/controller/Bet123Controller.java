@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.jms.Destination;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,13 +114,16 @@ all bookie companies and events
    }
 
    @RequestMapping(value = "/bet-in-bet123/Football/placeOrder", method = RequestMethod.POST)
-   public String betinbet123PlaceOrderFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model, HttpSession session) {
+   public String betinbet123PlaceOrderFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
+                                               HttpSession session) {
+      model.addAttribute("bookie", "Bet123");
+      model.addAttribute("result", "Your order has already been placed, here are all your orders.");
       String matchInfo = (String) session.getAttribute("matchInfo");
       if (betInfo.getSelection().equals("null") || matchInfo.equals("null"))   return "error";
       else {
          betInfo.setMatch(matchInfo);
-         b1bs.placeOrder(betInfo);
+         model.addAttribute("ordersTable", b1bs.placeOrder(betInfo));
       }
-      return "index";
+      return "Orders";
    }
 }

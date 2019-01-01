@@ -3,11 +3,11 @@ package com.example.domain;
 public class BetInfo {
 
    private String match;
-   private float amount;
+   private double amount;
    private String email;
    private String selection;
 
-   public void setAmount(float amount) {
+   public void setAmount(double amount) {
       this.amount = amount;
    }
 
@@ -23,7 +23,7 @@ public class BetInfo {
       this.selection = selection;
    }
 
-   public float getAmount() {
+   public double getAmount() {
       return amount;
    }
 
