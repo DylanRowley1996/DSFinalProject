@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Bet Now!</title>
 </head>
 <body>
 <h1>Bet <span th:text="${result}"></span> now in <span th:text="${bookie}"></span>!</h1>
-<form th:action="@{/bet-in-bet123}" th:object="${authinfo}" method="post">
-    <label for="eventName">Please select the events you want to check: </label>
-    <select class="form-control" name="eid">
-        <option>Select Events</option>
-        <option  th:each="list:${session.list}" th:value="${list}" th:text="${list}"></option>
-    </select>
-    <input type="submit" value="submit">
-</form>
+<b>Select the matches you want to bet on:</b><br>
+<ul>
+    <li th:each="list : ${matchesList}"><a th:href="@{'/bet-in-bet123/Football/'+${list}}" th:text="${list}"></a></li>
+</ul>
 <a href = "http://localhost:8080/index">Bring me back to the homepage!</a>
 </body>
 </html>

@@ -65,17 +65,23 @@ Notice that we want to use one single frontend template for
 all bookie companies and events
  */
    @RequestMapping(value = "/bet-in-bet123/Football", method = RequestMethod.GET)
-   public String betinbet123getFootball(Model model, HttpSession session) {
+   public String betinbet123getFootball(Model model) {
       model.addAttribute("result","Football");
       model.addAttribute("bookie", "Bet123");
       Map<String, String> matchesList = b1bs.getEventsList();
       // Create a list to store all the matches info for particular event
       List<String> currentMatchesList = new ArrayList<>();
       for (Map.Entry<String, String> vo : matchesList.entrySet()) {
-         if (vo.getValue().equals("Football"))   currentMatchesList.add(vo.getKey());
+         if (vo.getValue().equals("Football")) {
+            String matchInfo = vo.getKey();
+            String[] matchInfoDetails = matchInfo.split(",");
+            currentMatchesList.add("[" + matchInfoDetails[0] + "] "
+                                 + matchInfoDetails[1] + " VS "
+                                 + matchInfoDetails[2]);
+         }
       }
       System.out.println("Controller get list: " + currentMatchesList);
-      session.setAttribute("list", currentMatchesList);
+      model.addAttribute("matchesList", currentMatchesList);
       return "BetNow";
    }
 }

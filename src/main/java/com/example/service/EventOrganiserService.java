@@ -40,7 +40,6 @@ public class EventOrganiserService {
       }
       // System.out.println("Event Organiser send map: " + matches);
       Gson gson = new Gson();
-      String matchesJson = gson.toJson(matches);
-      return matchesJson;
+      return gson.toJson(matches);
    }
 }

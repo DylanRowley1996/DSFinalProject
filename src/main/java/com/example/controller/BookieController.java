@@ -30,7 +30,7 @@ public class BookieController {
     */
    @RequestMapping()
    public String index(HttpServletResponse response) {
-      return response.encodeRedirectURL("/index");
+      return response.encodeRedirectURL("index");
    }
 
    /*
@@ -63,7 +63,7 @@ public class BookieController {
       }
       // Return the username to the index page
       model.addAttribute("result", info);
-      return response.encodeRedirectURL("/index");
+      return response.encodeRedirectURL("index");
    }
 
    /*
@@ -98,7 +98,7 @@ public class BookieController {
       */
       Destination destination = new ActiveMQQueue("email.bookies");
       cbs.sendEmail(destination, authInfo.getEmail());
-      return response.encodeRedirectURL("/index");
+      return response.encodeRedirectURL("index");
    }
 
    /*
