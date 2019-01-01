@@ -2,32 +2,40 @@ package com.example.domain;
 
 public class BetInfo {
 
-   private String event;
+   private String match;
    private float amount;
-   private String acountEmail;
-
+   private String email;
+   private String selection;
 
    public void setAmount(float amount) {
       this.amount = amount;
    }
 
-   public void setAcountEmail(String acountEmail) {
-      this.acountEmail = acountEmail;
+   public void setEmail(String email) {
+      this.email = email;
    }
 
-   public void setEvent(String event) {
-      this.event = event;
+   public void setMatch(String match) {
+      this.match = match;
+   }
+
+   public void setSelection(String selection) {
+      this.selection = selection;
    }
 
    public float getAmount() {
       return amount;
    }
 
-   public String getAcountEmail() {
-      return acountEmail;
+   public String getEmail() {
+      return email;
    }
 
-   public String getEvent() {
-      return event;
+   public String getMatch() {
+      return match;
+   }
+
+   public String getSelection() {
+      return selection;
    }
 }

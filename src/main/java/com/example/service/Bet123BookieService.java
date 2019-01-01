@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dao.Bet123DB;
+import com.example.domain.BetInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
@@ -76,5 +77,15 @@ public class Bet123BookieService {
 
    public Map<String, String> getEventsList() {
       return matchesList;
+   }
+
+   public void placeOrder(BetInfo betInfo) {
+      // Create a document to store the order
+      BasicDBObject document = new BasicDBObject();
+      document.put("match", betInfo.getMatch());
+      document.put("amount", betInfo.getAmount());
+      document.put("email", betInfo.getEmail());
+      document.put("selection", betInfo.getSelection());
+      b1d.getOrderTable().insert(document);
    }
 }

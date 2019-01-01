@@ -96,7 +96,7 @@ public class CentralBookieService implements BookieService {
       /**** Update ****/
       // search document where name="mkyong" and update it with new values
       BasicDBObject query = new BasicDBObject();
-      query.put("email", betInfo.getAcountEmail());
+      query.put("email", betInfo.getEmail());
       DBCursor cursor = cbd.getTable().find(query);
 
       while (cursor.hasNext()) {
