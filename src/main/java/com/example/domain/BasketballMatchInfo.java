@@ -4,25 +4,17 @@ package com.example.domain;
 @author Qinyuan Zhang
 @date 03/01/2019
 */
-public class FootballMatchInfo {
-   private String league;
+public class BasketballMatchInfo {
    private String homeTeam;
    private String visitingTeam;
    private double homeTeamWinProb;
    private double visitingTeamWinProb;
-   private double drawProb;
 
-   public FootballMatchInfo(String league, String homeTeam, String visitingTeam, double homeTeamWinProb, double visitingTeamWinProb, double drawProb) {
-      this.league = league;
+   public BasketballMatchInfo(String homeTeam, String visitingTeam, double homeTeamWinProb, double visitingTeamWinProb) {
       this.homeTeam = homeTeam;
       this.visitingTeam = visitingTeam;
       this.homeTeamWinProb = homeTeamWinProb;
       this.visitingTeamWinProb = visitingTeamWinProb;
-      this.drawProb = drawProb;
-   }
-
-   public void setLeague(String league) {
-      this.league = league;
    }
 
    public void setHomeTeam(String homeTeam) {
@@ -41,14 +33,6 @@ public class FootballMatchInfo {
       this.visitingTeamWinProb = visitingTeamWinProb;
    }
 
-   public void setDrawProb(double drawProb) {
-      this.drawProb = drawProb;
-   }
-
-   public String getLeague() {
-      return league;
-   }
-
    public String getHomeTeam() {
       return homeTeam;
    }
@@ -65,7 +49,4 @@ public class FootballMatchInfo {
       return visitingTeamWinProb;
    }
 
-   public double getDrawProb() {
-      return drawProb;
-   }
 }

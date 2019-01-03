@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
 import com.example.service.Bet123BookieService;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.jms.Destination;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +44,10 @@ public class Bet123Controller {
       Notice that we need to send out and get info before the next step
       otherwise it will not work
       */
-      Destination destination = new ActiveMQQueue("matches.eventOrganiser");
+      Destination destination = new ActiveMQQueue("footballMatches.eventOrganiser");
       b1bs.sendToGetEvents(destination, "football");
+      Destination destination2 = new ActiveMQQueue("basketballMatches.eventOrganiser");
+      b1bs.sendToGetEvents(destination2, "basketball");
       return "bet123";
    }
 
@@ -54,19 +56,40 @@ public class Bet123Controller {
    Notice that we want to use one single frontend template for
    all bookie companies and events
     */
-   @RequestMapping(value = "/bet-in-bet123/HorseRace", method = RequestMethod.GET)
-   public String betinbet123getHorseRace(Model model, HttpSession session) {
-      model.addAttribute("result","Horse Race");
+   @RequestMapping(value = "/bet-in-bet123/Basketball", method = RequestMethod.GET)
+   public String betinbet123getHorseRace(Model model) {
+      model.addAttribute("result","Basketball");
       model.addAttribute("bookie", "Bet123");
-      List<FootballMatchInfo> matchesList = b1bs.getEventsList();
-      // Create a list to store all the matches info for particular event
-      List<String> currentMatchesList = new ArrayList<>();
-//      for (Map.Entry<FootballMatchInfo, String> vo : matchesList.entrySet()) {
-//         //if (vo.getValue().equals("HorseRace"))   currentMatchesList.add(vo.getKey());
-//      }
-      System.out.println("Controller get list: " + currentMatchesList);
-      session.setAttribute("list", currentMatchesList);
+      List<BasketballMatchInfo> matchesList = b1bs.getBasketballMatchesList();
+      // Create a map to store all the matches info for particular event
+      Map<String, String> currentMatchesMap = new HashMap<>();
+      for (BasketballMatchInfo matchInfo : matchesList) {
+         String displayOnHTML = matchInfo.getHomeTeam() + " (h) VS "
+                 + matchInfo.getVisitingTeam();
+         String hrefInfo = matchInfo.getHomeTeam() + "&"
+                 + matchInfo.getVisitingTeam() + "&"
+                 + matchInfo.getHomeTeamWinProb() + "&"
+                 + matchInfo.getVisitingTeamWinProb();
+         currentMatchesMap.put(displayOnHTML, hrefInfo);
+      }
+      model.addAttribute("matchesMap", currentMatchesMap);
       return "BetNow";
+   }
+
+   @RequestMapping(value = "/bet-in-bet123/Basketball/{hrefInfo}", method = RequestMethod.GET)
+   public String betinbet123CheckBasketballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
+      model.addAttribute("result","Basketball");
+      model.addAttribute("bookie", "Bet123");
+      String[] hrefDetails = hrefInfo.split("\\&");
+      List<Double> probabilities = new ArrayList<>();
+      session.setAttribute("matchInfo", hrefDetails[1] + " VS " + hrefDetails[2]);
+      for (int i = 2 ; i < 4 ; i++) probabilities.add(Double.valueOf(hrefDetails[i]));
+      List<Double> odds = osl.generateFootballOdds(probabilities);
+      Map<String, Double> displayInfo =  new HashMap<>();
+      displayInfo.put(hrefDetails[0] + " (h)", odds.get(0));
+      displayInfo.put(hrefDetails[1], odds.get(1));
+      model.addAttribute("oddsMap", displayInfo);
+      return "CheckOdds";
    }
 
    /*
@@ -78,8 +101,8 @@ all bookie companies and events
    public String betinbet123getFootball(Model model) {
       model.addAttribute("result","Football");
       model.addAttribute("bookie", "Bet123");
-      List<FootballMatchInfo> footballMatchesList = b1bs.getEventsList();
-      // Create a list to store all the matches info for particular event
+      List<FootballMatchInfo> footballMatchesList = b1bs.getFootballMatchesList();
+      // Create a map to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
       for (FootballMatchInfo matchInfo : footballMatchesList) {
             String displayOnHTML = "[" + matchInfo.getLeague() + "] "
@@ -103,7 +126,6 @@ all bookie companies and events
       model.addAttribute("result","Football");
       model.addAttribute("bookie", "Bet123");
       String[] hrefDetails = hrefInfo.split("\\&");
-      System.out.println(hrefDetails[4]);
       List<Double> probabilities = new ArrayList<>();
       session.setAttribute("matchInfo", hrefDetails[0] + " " + hrefDetails[1] + " VS " + hrefDetails[2]);
       for (int i = 3 ; i < 6 ; i++) probabilities.add(Double.valueOf(hrefDetails[i]));

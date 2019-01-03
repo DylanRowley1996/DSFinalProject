@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dao.Bet123DB;
+import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
 import com.google.gson.Gson;
@@ -8,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -61,9 +63,10 @@ public class Bet123BookieService {
       return 0.0;
    }
 
-   // The send message to get events
+   // The send message to get matches
    // Create a string list to store the events
    private List<FootballMatchInfo> footballMatchesList = null;
+   private List<BasketballMatchInfo> basketballMatchesList = null;
    // Create the jms template
    @Resource
    private JmsMessagingTemplate jmsTemplate;
@@ -72,16 +75,27 @@ public class Bet123BookieService {
       jmsTemplate.convertAndSend(destination, event);
    }
 
-   @JmsListener(destination = "matches.bookies")
-   public void getEvents(String matchesJson) {
+   @JmsListener(destination = "footballMatches.bookies")
+   public void getFootballMatches(String matchesJson) {
       // System.out.println("Bet123 Service get Map: " + matches);
       Gson gson = new Gson();
       footballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<FootballMatchInfo>>(){}.getType());
       System.out.println("Bet123Service get info: " + footballMatchesList.get(0).getHomeTeam());
    }
 
-   public List<FootballMatchInfo> getEventsList() {
+   public List<FootballMatchInfo> getFootballMatchesList() {
       return footballMatchesList;
+   }
+
+   @JmsListener(destination = "basketballMatches.bookies")
+   public void getBasketballMatches(String matchesJson) {
+      Gson gson = new Gson();
+      basketballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<BasketballMatchInfo>>(){}.getType());
+      System.out.println("Bet123Service get info: " + basketballMatchesList.get(0).getHomeTeam());
+   }
+
+   public List<BasketballMatchInfo> getBasketballMatchesList() {
+      return basketballMatchesList;
    }
 
    public List<BetInfo> placeOrder(BetInfo betInfo) {

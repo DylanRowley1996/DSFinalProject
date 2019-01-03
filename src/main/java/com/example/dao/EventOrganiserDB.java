@@ -17,4 +17,12 @@ public class EventOrganiserDB {
 
       return table;
    }
+
+   public DBCollection getBasketballTable () {
+      MongoClient mongo = new MongoClient("localhost", 27017);
+      DB db = mongo.getDB("eventOrganiserDB");
+      DBCollection table = db.getCollection("BasketBall");
+
+      return table;
+   }
 }

@@ -12,11 +12,11 @@
 </ul>
 <br>
 <form th:action="@{/bet-in-bet123/Football/placeOrder}" th:object="${betinfo}" method="post">
-    <label for="selection">Please select which one you want to bet on: </label>
+    <label for="selection">Please select which one you want to bet on (No Tie for basketball match): </label>
     <select class="selection" name="selection">
         <option value ="null">Select:</option>
         <option value ="home">Home Team Win</option>
-        <option value ="draw">Draw</option>
+        <option value ="tie">Tie</option>
         <option value ="visiting">Visiting Team Win</option>
     </select><br>
     <label for="amount">Bet Amount:</label>
