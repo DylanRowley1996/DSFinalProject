@@ -34,8 +34,8 @@ public class Bet123Controller {
       Notice that we need to send out and get info before the next step
       otherwise it will not work
       */
-      Destination destination = new ActiveMQQueue("matches.eventOrganiser");
-      b1bs.sendToGetEvents(destination, true);
+//      Destination destination = new ActiveMQQueue("matches.eventOrganiser");
+//      b1bs.sendToGetEvents(destination, true);
       return "bet123";
    }
 
@@ -48,7 +48,7 @@ public class Bet123Controller {
    public String betinbet123getHorseRace(Model model, HttpSession session) {
       model.addAttribute("result","Horse Race");
       model.addAttribute("bookie", "Bet123");
-      Map<String, String> matchesList = b1bs.getEventsList();
+      Map<String, String> matchesList = b1bs.getEventsList("horseracing");
       // Create a list to store all the matches info for particular event
       List<String> currentMatchesList = new ArrayList<>();
       for (Map.Entry<String, String> vo : matchesList.entrySet()) {
@@ -56,6 +56,9 @@ public class Bet123Controller {
       }
       System.out.println("Controller get list: " + currentMatchesList);
       session.setAttribute("list", currentMatchesList);
+
+      Destination destination = new ActiveMQQueue("matches.eventOrganiser");
+      b1bs.sendToGetEvents(destination, true, "horseracing");
       return "BetNow";
    }
 
@@ -68,7 +71,7 @@ all bookie companies and events
    public String betinbet123getFootball(Model model, HttpSession session) {
       model.addAttribute("result","Football");
       model.addAttribute("bookie", "Bet123");
-      Map<String, String> matchesList = b1bs.getEventsList();
+      Map<String, String> matchesList = b1bs.getEventsList("football");
       // Create a list to store all the matches info for particular event
       List<String> currentMatchesList = new ArrayList<>();
       for (Map.Entry<String, String> vo : matchesList.entrySet()) {

@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dao.EventOrganiserDB;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
@@ -27,14 +28,16 @@ public class EventOrganiserService {
    // Get info from bookie companies amd send back all the matches' info
    @JmsListener(destination = "matches.eventOrganiser")
    @SendTo("matches.bookies")
-   public String receiveAndSendBackEvents(Boolean getMatches) {
+   public String receiveAndSendBackEvents(JsonObject jsonObject) {
+      boolean getMatches = jsonObject.get("getMatches").getAsBoolean();
+      String sport = jsonObject.get("sport").getAsString();
       if (getMatches) {
          System.out.println("Bookies want to get matches from Event Organiser");
       }
       // Create a list first
       Map<String, String> matches = new HashMap<>();
       /**** Find all the events and store in a list****/
-      DBCursor cursor = eod.getTable().find();
+      DBCursor cursor = eod.getTable(sport).find();
       for (DBObject object : cursor) {
          matches.put((String)object.get("info"), (String)object.get("event"));
       }
