@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dao.EventOrganiserDB;
+import com.example.domain.FootballMatchInfo;
 import com.google.gson.Gson;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -27,19 +28,32 @@ public class EventOrganiserService {
    // Get info from bookie companies amd send back all the matches' info
    @JmsListener(destination = "matches.eventOrganiser")
    @SendTo("matches.bookies")
-   public String receiveAndSendBackEvents(Boolean getMatches) {
-      if (getMatches) {
-         System.out.println("Bookies want to get matches from Event Organiser");
+   public String receiveAndSendBackEvents(String event) {
+      if (event.equals("football")) {
+         System.out.println("Bookies want to get football footballMatches from Event Organiser");
+         // Create a list first
+         List<FootballMatchInfo> footballMatches = new ArrayList<>();
+         /**** Find all the events and store in a list****/
+         DBCursor cursor = eod.getFootballTable().find();
+         FootballMatchInfo footballMatchInfo;
+         // We only want 10 matches now
+         int i = 0;
+         for (DBObject object : cursor) {
+            footballMatchInfo = new FootballMatchInfo();
+            footballMatchInfo.setLeague((String)object.get("League"));
+            footballMatchInfo.setHomeTeam((String)object.get("team1"));
+            footballMatchInfo.setVisitingTeam((String)object.get("team2"));
+            footballMatchInfo.setHomeTeamWinProb(Double.valueOf(object.get("prob1Win").toString()));
+            footballMatchInfo.setVisitingTeamWinProb(Double.valueOf(object.get("prob2Win").toString()));
+            footballMatchInfo.setDrawProb(Double.valueOf(object.get("probTie").toString()));
+            footballMatches.add(footballMatchInfo);
+            i++;
+            if (i == 10)    break;
+         }
+         System.out.println("Event Organiser send list: " + footballMatches.get(0).getLeague());
+         Gson gson = new Gson();
+         return gson.toJson(footballMatches);
       }
-      // Create a list first
-      Map<String, String> matches = new HashMap<>();
-      /**** Find all the events and store in a list****/
-      DBCursor cursor = eod.getTable().find();
-      for (DBObject object : cursor) {
-         matches.put((String)object.get("info"), (String)object.get("event"));
-      }
-      // System.out.println("Event Organiser send map: " + matches);
-      Gson gson = new Gson();
-      return gson.toJson(matches);
+      return null;
    }
 }

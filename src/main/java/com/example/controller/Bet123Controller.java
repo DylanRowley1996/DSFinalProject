@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.domain.BetInfo;
+import com.example.domain.FootballMatchInfo;
 import com.example.service.Bet123BookieService;
 import com.example.service.OddSpecialistService;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -44,7 +45,7 @@ public class Bet123Controller {
       otherwise it will not work
       */
       Destination destination = new ActiveMQQueue("matches.eventOrganiser");
-      b1bs.sendToGetEvents(destination, true);
+      b1bs.sendToGetEvents(destination, "football");
       return "bet123";
    }
 
@@ -57,12 +58,12 @@ public class Bet123Controller {
    public String betinbet123getHorseRace(Model model, HttpSession session) {
       model.addAttribute("result","Horse Race");
       model.addAttribute("bookie", "Bet123");
-      Map<String, String> matchesList = b1bs.getEventsList();
+      List<FootballMatchInfo> matchesList = b1bs.getEventsList();
       // Create a list to store all the matches info for particular event
       List<String> currentMatchesList = new ArrayList<>();
-      for (Map.Entry<String, String> vo : matchesList.entrySet()) {
-         if (vo.getValue().equals("HorseRace"))   currentMatchesList.add(vo.getKey());
-      }
+//      for (Map.Entry<FootballMatchInfo, String> vo : matchesList.entrySet()) {
+//         //if (vo.getValue().equals("HorseRace"))   currentMatchesList.add(vo.getKey());
+//      }
       System.out.println("Controller get list: " + currentMatchesList);
       session.setAttribute("list", currentMatchesList);
       return "BetNow";
@@ -77,21 +78,22 @@ all bookie companies and events
    public String betinbet123getFootball(Model model) {
       model.addAttribute("result","Football");
       model.addAttribute("bookie", "Bet123");
-      Map<String, String> matchesList = b1bs.getEventsList();
+      List<FootballMatchInfo> footballMatchesList = b1bs.getEventsList();
       // Create a list to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
-      for (Map.Entry<String, String> vo : matchesList.entrySet()) {
-         if (vo.getValue().equals("Football")) {
-            String matchInfo = vo.getKey();
-            String[] matchInfoDetails = matchInfo.split(",");
-            String displayOnHTML = "[" + matchInfoDetails[0] + "] "
-                                    + matchInfoDetails[1] + " (h) VS "
-                                    + matchInfoDetails[2];
-            String hrefInfo = matchInfo.replace(",","&");
+      for (FootballMatchInfo matchInfo : footballMatchesList) {
+            String displayOnHTML = "[" + matchInfo.getLeague() + "] "
+                                    + matchInfo.getHomeTeam() + " (h) VS "
+                                    + matchInfo.getVisitingTeam();
+            String hrefInfo = matchInfo.getLeague() + "&"
+                    + matchInfo.getHomeTeam() + "&"
+                    + matchInfo.getVisitingTeam() + "&"
+                    + matchInfo.getHomeTeamWinProb() + "&"
+                    + matchInfo.getVisitingTeamWinProb() + "&"
+                    + matchInfo.getDrawProb();
             currentMatchesMap.put(displayOnHTML, hrefInfo);
-         }
       }
-      System.out.println("Controller get info: " + currentMatchesMap);
+      System.out.println("Controller get info: " + footballMatchesList.get(0).getHomeTeam());
       model.addAttribute("matchesMap", currentMatchesMap);
       return "BetNow";
    }
@@ -101,6 +103,7 @@ all bookie companies and events
       model.addAttribute("result","Football");
       model.addAttribute("bookie", "Bet123");
       String[] hrefDetails = hrefInfo.split("\\&");
+      System.out.println(hrefDetails[4]);
       List<Double> probabilities = new ArrayList<>();
       session.setAttribute("matchInfo", hrefDetails[0] + " " + hrefDetails[1] + " VS " + hrefDetails[2]);
       for (int i = 3 ; i < 6 ; i++) probabilities.add(Double.valueOf(hrefDetails[i]));
@@ -117,12 +120,12 @@ all bookie companies and events
    public String betinbet123PlaceOrderFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session) {
       model.addAttribute("bookie", "Bet123");
-      model.addAttribute("result", "Your order has already been placed, here are all your orders.");
       String matchInfo = (String) session.getAttribute("matchInfo");
       if (betInfo.getSelection().equals("null") || matchInfo.equals("null"))   return "error";
       else {
          betInfo.setMatch(matchInfo);
          model.addAttribute("ordersTable", b1bs.placeOrder(betInfo));
+         model.addAttribute("result", "Your order has already been placed, here are all your orders.");
       }
       return "Orders";
    }

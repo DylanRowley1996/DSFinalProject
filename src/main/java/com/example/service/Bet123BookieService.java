@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dao.Bet123DB;
 import com.example.domain.BetInfo;
+import com.example.domain.FootballMatchInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.jms.Destination;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,24 +63,25 @@ public class Bet123BookieService {
 
    // The send message to get events
    // Create a string list to store the events
-   private Map<String, String> matchesList = null;
+   private List<FootballMatchInfo> footballMatchesList = null;
    // Create the jms template
    @Resource
    private JmsMessagingTemplate jmsTemplate;
 
-   public void sendToGetEvents(Destination destination, Boolean getMatches) {
-      jmsTemplate.convertAndSend(destination, getMatches);
+   public void sendToGetEvents(Destination destination, String event) {
+      jmsTemplate.convertAndSend(destination, event);
    }
 
    @JmsListener(destination = "matches.bookies")
    public void getEvents(String matchesJson) {
       // System.out.println("Bet123 Service get Map: " + matches);
       Gson gson = new Gson();
-      matchesList = gson.fromJson(matchesJson, new TypeToken<Map<String, String>>(){}.getType());
+      footballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<FootballMatchInfo>>(){}.getType());
+      System.out.println("Bet123Service get info: " + footballMatchesList.get(0).getHomeTeam());
    }
 
-   public Map<String, String> getEventsList() {
-      return matchesList;
+   public List<FootballMatchInfo> getEventsList() {
+      return footballMatchesList;
    }
 
    public List<BetInfo> placeOrder(BetInfo betInfo) {
