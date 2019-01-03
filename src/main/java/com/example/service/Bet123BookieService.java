@@ -1,7 +1,10 @@
 package com.example.service;
 
 import com.example.dao.Bet123DB;
+import com.example.dao.EventOrganiserDB;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
@@ -11,8 +14,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.jms.Destination;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /*
 @author Qinyuan Zhang
@@ -33,6 +38,7 @@ public class Bet123BookieService {
 
    // Create the connection with the database
    private Bet123DB b1d = new Bet123DB();
+   private EventOrganiserDB eoDB = new EventOrganiserDB();
 
    // Get the user's balance
    public double getBalance() {
@@ -58,15 +64,20 @@ public class Bet123BookieService {
 
    // The send message to get events
    // Create a string list to store the events
-   private Map<String, String> matchesList = null;
+   private Map<String, String> matchesList = new HashMap<String, String>();
    // Create the jms template
    @Resource
    private JmsMessagingTemplate jmsTemplate;
 
-   public void sendToGetEvents(Destination destination, Boolean getMatches) {
-      jmsTemplate.convertAndSend(destination, getMatches);
+   public void sendToGetEvents(Destination destination, Boolean getMatches, String sport) {
+      JsonObject jsonObject = new JsonObject();
+      jsonObject.addProperty("getMatches", getMatches);
+      jsonObject.addProperty("sport", sport);
+
+      jmsTemplate.convertAndSend(destination, jsonObject);
    }
 
+   // JMSListener for "matches.bookies" though no message is ever sent to that queue?
    @JmsListener(destination = "matches.bookies")
    public void getEvents(String matchesJson) {
       // System.out.println("Bet123 Service get Map: " + matches);
@@ -74,7 +85,22 @@ public class Bet123BookieService {
       matchesList = gson.fromJson(matchesJson, new TypeToken<Map<String, String>>(){}.getType());
    }
 
-   public Map<String, String> getEventsList() {
+   // TODO Maybe change return type to List?
+   public Map<String, String> getEventsList(String sport) {
+      switch (sport){
+         case "football":
+            DBCursor cursor = eoDB.getTable(sport).find();
+            while(cursor.hasNext()) {
+               String league = (String) cursor.next().get("League");
+               if(!(matchesList.containsKey(league)))
+                  matchesList.put(league, "Football");
+            }
+            matchesList = new TreeMap<String, String>(matchesList);
+            break;
+
+            default:
+               System.out.println("Invalid sport");
+      }
       return matchesList;
    }
 }
