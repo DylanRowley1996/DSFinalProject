@@ -82,14 +82,41 @@ public class Bet123Controller {
       model.addAttribute("bookie", "Bet123");
       String[] hrefDetails = hrefInfo.split("\\&");
       List<Double> probabilities = new ArrayList<>();
-      session.setAttribute("matchInfo", hrefDetails[1] + " VS " + hrefDetails[2]);
+      session.setAttribute("matchInfo", hrefDetails[0] + " VS " + hrefDetails[1]);
       for (int i = 2 ; i < 4 ; i++) probabilities.add(Double.valueOf(hrefDetails[i]));
       List<Double> odds = osl.generateFootballOdds(probabilities);
+      session.setAttribute("odds", odds);
       Map<String, Double> displayInfo =  new HashMap<>();
       displayInfo.put(hrefDetails[0] + " (h)", odds.get(0));
       displayInfo.put(hrefDetails[1], odds.get(1));
       model.addAttribute("oddsMap", displayInfo);
       return "CheckOdds";
+   }
+
+   @RequestMapping(value = "/bet-in-bet123/Basketball/placeOrder", method = RequestMethod.POST)
+   public String betinbet123PlaceOrderBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
+                                               HttpSession session) {
+      model.addAttribute("bookie", "Bet123");
+      String matchInfo = (String) session.getAttribute("matchInfo");
+      List<Double> odds= (List<Double>) session.getAttribute("odds");
+      if (betInfo.getSelection().equals("null") || betInfo.getSelection().equals("tie") || matchInfo.equals("null"))   return "error";
+      else {
+         betInfo.setMatch(matchInfo);
+         switch (betInfo.getSelection()) {
+            case "home":
+               betInfo.setOdd(odds.get(0));
+               break;
+            case "visiting":
+               betInfo.setOdd(odds.get(1));
+               break;
+            default:
+               betInfo.setOdd(0.0);
+               break;
+         }
+         model.addAttribute("ordersTable", b1bs.placeOrder(betInfo));
+         model.addAttribute("result", "Your order has already been placed, here are all your orders.");
+      }
+      return "Orders";
    }
 
    /*
@@ -130,6 +157,7 @@ all bookie companies and events
       session.setAttribute("matchInfo", hrefDetails[0] + " " + hrefDetails[1] + " VS " + hrefDetails[2]);
       for (int i = 3 ; i < 6 ; i++) probabilities.add(Double.valueOf(hrefDetails[i]));
       List<Double> odds = osl.generateFootballOdds(probabilities);
+      session.setAttribute("odds", odds);
       Map<String, Double> displayInfo =  new HashMap<>();
       displayInfo.put(hrefDetails[1] + " (h)", odds.get(0));
       displayInfo.put(hrefDetails[2], odds.get(1));
@@ -143,11 +171,27 @@ all bookie companies and events
                                                HttpSession session) {
       model.addAttribute("bookie", "Bet123");
       String matchInfo = (String) session.getAttribute("matchInfo");
+      List<Double> odds= (List<Double>) session.getAttribute("odds");
       if (betInfo.getSelection().equals("null") || matchInfo.equals("null"))   return "error";
       else {
          betInfo.setMatch(matchInfo);
+         switch (betInfo.getSelection()) {
+            case "home":
+               betInfo.setOdd(odds.get(0));
+               break;
+            case "visiting":
+               betInfo.setOdd(odds.get(1));
+               break;
+            case "tie":
+               betInfo.setOdd(odds.get(2));
+               break;
+            default:
+               betInfo.setOdd(0.0);
+               break;
+         }
+         System.out.println(betInfo.getOdd());
          model.addAttribute("ordersTable", b1bs.placeOrder(betInfo));
-         model.addAttribute("result", "Your order has already been placed, here are all your orders.");
+         model.addAttribute("result", "Your order is placed, here are all your orders.");
       }
       return "Orders";
    }

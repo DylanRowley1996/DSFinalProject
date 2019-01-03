@@ -105,6 +105,7 @@ public class Bet123BookieService {
       document.put("amount", betInfo.getAmount());
       document.put("email", betInfo.getEmail());
       document.put("selection", betInfo.getSelection());
+      document.put("odd", betInfo.getOdd());
       b1d.getOrderTable().insert(document);
 
       /**** Find whether the rest orders and return****/
@@ -120,6 +121,7 @@ public class Bet123BookieService {
          newBetInfo.setAmount((Double) ((DBObject) c).get("amount"));
          newBetInfo.setSelection((String) ((DBObject) c).get("selection"));
          newBetInfo.setEmail((String) ((DBObject) c).get("email"));
+         newBetInfo.setOdd((Double) ((DBObject) c).get("odd"));
          betInfoList.add(newBetInfo);
       }
 

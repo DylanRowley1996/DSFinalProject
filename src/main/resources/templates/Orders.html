@@ -12,11 +12,13 @@
         <th>Match</th>
         <th>Amount</th>
         <th>Selection</th>
+        <th>Odd</th>
     </tr>
     <tr  th:each="info : ${ordersTable}" >
         <th th:text="${info.match}"></th>
         <th th:text="${info.amount}"></th>
         <th th:text="${info.selection}"></th>
+        <th th:text="${info.odd}"></th>
     </tr>
 </table>
 </body>

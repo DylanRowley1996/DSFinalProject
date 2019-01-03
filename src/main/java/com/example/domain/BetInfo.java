@@ -6,6 +6,7 @@ public class BetInfo {
    private double amount;
    private String email;
    private String selection;
+   private double odd;
 
    public void setAmount(double amount) {
       this.amount = amount;
@@ -23,6 +24,8 @@ public class BetInfo {
       this.selection = selection;
    }
 
+   public void setOdd(double odd) { this.odd = odd; }
+
    public double getAmount() {
       return amount;
    }
@@ -38,4 +41,6 @@ public class BetInfo {
    public String getSelection() {
       return selection;
    }
+
+   public double getOdd() { return odd; }
 }
