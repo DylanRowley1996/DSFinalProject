@@ -17,10 +17,10 @@ public class Bet123DB {
       return table;
    }
    // This method is used to keep the connection with the database
-   public DBCollection getOrderTable () {
+   public DBCollection getBetsTable() {
       MongoClient mongo = new MongoClient("localhost", 27017);
       DB db = mongo.getDB("bet123db");
-      DBCollection table = db.getCollection("order");
+      DBCollection table = db.getCollection("bet");
       return table;
    }
 }

@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Orders</title>
+    <title>Bets</title>
 </head>
 <body>
-<h1>Orders you submitted on <span th:text="${bookie}"></span>!</h1>
+<h1>Bets you placed with <span th:text="${bookie}"></span>!</h1>
 <b><span th:text="${result}"></span></b>
 <table border="1">
     <tr>
@@ -14,7 +14,7 @@
         <th>Selection</th>
         <th>Odd</th>
     </tr>
-    <tr  th:each="info : ${ordersTable}" >
+    <tr  th:each="info : ${betsTable}" >
         <th th:text="${info.match}"></th>
         <th th:text="${info.amount}"></th>
         <th th:text="${info.selection}"></th>
