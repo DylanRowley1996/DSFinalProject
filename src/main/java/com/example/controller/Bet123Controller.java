@@ -96,8 +96,8 @@ public class Bet123Controller {
       return "CheckOdds";
    }
 
-   @RequestMapping(value = "/bet-in-bet123/Basketball/placeOrder", method = RequestMethod.POST)
-   public String betinbet123PlaceOrderBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
+   @RequestMapping(value = "/bet-in-bet123/Basketball/placeBet", method = RequestMethod.POST)
+   public String betinbet123PlaceBetBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session) {
       model.addAttribute("bookie", "Bet123");
       String matchInfo = (String) session.getAttribute("matchInfo");
@@ -116,10 +116,10 @@ public class Bet123Controller {
                betInfo.setOdd(0.0);
                break;
          }
-         model.addAttribute("ordersTable", b1bs.placeOrder(betInfo));
-         model.addAttribute("result", "Your order has already been placed, here are all your orders.");
+         model.addAttribute("betsTable", b1bs.placeBet(betInfo));
+         model.addAttribute("result", "Your bet has already been placed, here are all your bets.");
       }
-      return "Orders";
+      return "Bets";
    }
 
    /*
@@ -171,8 +171,8 @@ all bookie companies and events
       return "CheckOdds";
    }
 
-   @RequestMapping(value = "/bet-in-bet123/Football/placeOrder", method = RequestMethod.POST)
-   public String betinbet123PlaceOrderFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
+   @RequestMapping(value = "/bet-in-bet123/Football/placeBet", method = RequestMethod.POST)
+   public String betinbet123PlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session) {
       model.addAttribute("bookie", "Bet123");
       String matchInfo = (String) session.getAttribute("matchInfo");
@@ -195,9 +195,9 @@ all bookie companies and events
                break;
          }
          System.out.println(betInfo.getOdd());
-         model.addAttribute("ordersTable", b1bs.placeOrder(betInfo));
-         model.addAttribute("result", "Your order is placed, here are all your orders.");
+         model.addAttribute("betsTable", b1bs.placeBet(betInfo));
+         model.addAttribute("result", "Your bet is placed, here are all your bets.");
       }
-      return "Orders";
+      return "Bets";
    }
 }

@@ -6,13 +6,10 @@ import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
 import com.example.dao.EventOrganiserDB;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -20,10 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.jms.Destination;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /*
 @author Qinyuan Zhang
@@ -108,20 +102,20 @@ public class Bet123BookieService {
       return basketballMatchesList;
    }
 
-   public List<BetInfo> placeOrder(BetInfo betInfo) {
-      // Create a document to store the order
+   public List<BetInfo> placeBet(BetInfo betInfo) {
+      // Create a document to store the bet
       BasicDBObject document = new BasicDBObject();
       document.put("match", betInfo.getMatch());
       document.put("amount", betInfo.getAmount());
       document.put("email", betInfo.getEmail());
       document.put("selection", betInfo.getSelection());
       document.put("odd", betInfo.getOdd());
-      b1d.getOrderTable().insert(document);
+      b1d.getBetsTable().insert(document);
 
-      /**** Find whether the rest orders and return****/
+      /**** Find whether the rest bets and return****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", betInfo.getEmail());
-      DBCursor cursor = b1d.getOrderTable().find(searchQuery);
+      DBCursor cursor = b1d.getBetsTable().find(searchQuery);
 
       List<BetInfo> betInfoList = new ArrayList<>();
       while (cursor.hasNext()) {
