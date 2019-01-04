@@ -58,7 +58,7 @@ public class CentralBookieService implements BookieService {
    This is used to register and put user info into the database
     */
    @Override
-   public String registryUser(UserInfo userInfo){
+   public String registerUser(UserInfo userInfo){
       String emailPattrn = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
       if (!Pattern.matches(emailPattrn, userInfo.getEmail())) {
          return "Wrong email format. Please try again!";
@@ -72,7 +72,7 @@ public class CentralBookieService implements BookieService {
       document.put("password", userInfo.getPassword());
       document.put("balance", 0);
       cbd.getTable().insert(document);
-      return "Successfully register, please login!";
+      return "Successfully registered, please login!";
    }
 
    /*

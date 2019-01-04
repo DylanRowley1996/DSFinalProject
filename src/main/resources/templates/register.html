@@ -9,13 +9,13 @@
 <!--/*@thymesVar id="userinfo" type="com.example.domain.UserInfo"*/-->
 <form th:action="@{/register}" th:object="${userinfo}" method="post">
     <label for="username">Username:</label>
-    <input type="text" name="username"  id="username"/>
+    <input required type="text" name="username"  id="username"/>
     <label for="age">Age:</label>
-    <input type="text" name="age"  id="age"/>
+    <input required type="number" min="18" name="age"  id="age"/>
     <label for="email">Email:</label>
-    <input type="text" name="email"  id="email"/>
+    <input required type="text" name="email"  id="email"/>
     <label for="password">Password:</label>
-    <input type="password" name="password" id="password"/>
+    <input required type="password" name="password" id="password"/>
     <input type="submit" value="submit" onclick="return ischeckemail()">
 </form>
 </body>

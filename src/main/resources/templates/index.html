@@ -1,48 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Bookie Company</title>
     <link rel="stylesheet" href="src/main/resources/css/stylesheet.css">
 
-    <!--<script>-->
-        <!--function openForm() {-->
-            <!--document.getElementById("myForm").style.display = "block";-->
-        <!--}-->
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
 
-        <!--function closeForm() {-->
-            <!--document.getElementById("myForm").style.display = "none";-->
-        <!--}-->
-    <!--</script>-->
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
 
 </head>
     <body>
         <h1> <!--/*@thymesVar id="result" type="com.example.domain.AuthInfo"*/-->
         <span th:text="${result}"></span></h1>
-        <h1>Welcome to the COMP30020 Bookie Company<br> <span  th:text="${session.Auth!=null}?${session.Auth.getEmail()}:'(Sorry you are not logged in)'" ></span> </h1>
+        <h1>Welcome to the COMP30020 Bookie Company<br> <span  th:text="${session.Auth!=null}?${session.Auth.getEmail()}:'(Log-in or register to place some bets        )'" ></span> </h1>
         <a th:href="@{/bet123}" th:unless="${session.Auth==null}">Check Bet123!<br><br><br></a>
         <a th:href="@{/register}" th:if="${session.Auth==null}">Register Now!<br></a>
         <a th:href="@{/login}" th:if="${session.Auth==null}">Log-In<br></a>
-        <a th:href="@{/logout}" th:unless="${session.Auth==null}">Logout</a>
-
-        <!--<button  th:unless="${session.Auth==null}" >Add to Balance</button>-->
-        <!---->
-        <!--<div class="form-popup" id="myForm">-->
-            <!--<form action="/action_page.php" class="form-container">-->
-                <!--<h1>Visa</h1>-->
-
-                <!--<label><b>Card Number</b></label>-->
-                <!--<input type="text" placeholder="Enter Card Number" required>-->
-
-                <!--<label><b>Expiry Date</b></label>-->
-                <!--<input type="date" placeholder="Enter expiry date" required>-->
-
-                <!--<button type="submit" class="btn">Login</button>-->
-                <!--<button type="submit" class="btn cancel" onclick="closeForm()">Close</button>-->
-            <!--</form>-->
-        <!--</div>-->
-
-
+        <a th:href="@{/logout}" th:unless="${session.Auth==null}">Logout<br></a>
+        <a th:href="@{/paymentProcessor}" th:unless="${session.Auth==null}" >Update Balance</a>
     </body>
 </html>
 

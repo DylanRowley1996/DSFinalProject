@@ -59,7 +59,7 @@ public class BookieController {
                               HttpServletResponse response) {
       String info = "Sorry the email you entered has been registered. Please try again.";
       if (!cbs.ifExist(userInfo)) {
-         info = cbs.registryUser(userInfo);
+         info = cbs.registerUser(userInfo);
       }
       // Return the username to the index page
       model.addAttribute("result", info);
@@ -110,5 +110,15 @@ public class BookieController {
       session.removeAttribute("Auth");
       return "index";
    }
+
+   /**/
+   @RequestMapping(value="/paymentProcessor", method=RequestMethod.GET)
+   public String paymentProcessing(Model model, @ModelAttribute(value = "authinfo") AuthInfo authInfo){
+
+      model.addAttribute("result", cbs.getUsername(authInfo));
+
+      return "paymentProcessor";
+   }
+
 
 }

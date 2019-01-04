@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Bet <span th:text="${result}"></span> now in <span th:text="${bookie}"></span>!</h1>
-<b>Odds we provided are here: </b><br>
+<b>Odds we provide are here: </b><br>
 <ul>
     <li th:each="map : ${oddsMap}"><a th:text="${map.key}"></a> : <a th:text="${map.value}"></a></li>
 </ul>
