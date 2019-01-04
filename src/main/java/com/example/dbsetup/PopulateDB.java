@@ -3,6 +3,8 @@ package com.example.dbsetup;
 import com.mongodb.*;
 import org.bson.types.ObjectId;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class PopulateDB {
@@ -15,9 +17,6 @@ public class PopulateDB {
     private File footballDataFile = new File("src/main/resources/odds/FootBallData.csv");
     private File horseRacingDataFile = new File("src/main/resources/odds/horse_racing_odds.csv");
     private File nbaDataFile = new File("src/main/resources/odds/nba_data.csv");
-
-
-
 
     public PopulateDB(){}
 
@@ -69,18 +68,36 @@ public class PopulateDB {
             BufferedReader br = new BufferedReader(new FileReader(horseRacingDataFile));
 
             String st;
+            int numberOfMatch = 1;
+            HashMap<String, String> horsesAndProbabilities = new HashMap<String, String>();
+
             while ((st = br.readLine()) != null) {
 
                 //Split line into its fields.
                 String[] fields = st.split(",");
 
-                //Create a DBObject with the obtained fields.
-                DBObject horse = new BasicDBObject("_id", new ObjectId())
-                        .append("horseName", fields[0])
-                        .append("probWin", fields[1]);
+                horsesAndProbabilities.put(fields[0], fields[1]);
 
-                // Insert football match into table.
-                horseRaces.insert(horse);
+                if(horsesAndProbabilities.size() == 10){
+
+                    for(String key: horsesAndProbabilities.keySet()){
+                        //Create a DBObject with the obtained fields.
+                        DBObject horse = new BasicDBObject("_id", new ObjectId())
+                                .append("matchNumber", numberOfMatch)
+                                .append("horseName", key)
+                                .append("probWin", horsesAndProbabilities.get(key));
+
+                        // Insert football match into table.
+                        horseRaces.insert(horse);
+                    }
+
+                    numberOfMatch++;
+                    horsesAndProbabilities.clear();
+
+                }
+
+
+
             }
 
         } catch (IOException e) {

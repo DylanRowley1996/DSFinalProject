@@ -4,7 +4,10 @@ import com.example.dao.Bet123DB;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
+import com.example.dao.EventOrganiserDB;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /*
 @author Qinyuan Zhang
@@ -40,6 +44,7 @@ public class Bet123BookieService {
 
    // Create the connection with the database
    private Bet123DB b1d = new Bet123DB();
+   private EventOrganiserDB eoDB = new EventOrganiserDB();
 
    // Get the user's balance
    public double getBalance() {
@@ -65,11 +70,14 @@ public class Bet123BookieService {
 
    // The send message to get matches
    // Create a string list to store the events
+
    private List<FootballMatchInfo> footballMatchesList = null;
    private List<BasketballMatchInfo> basketballMatchesList = null;
+
    // Create the jms template
    @Resource
    private JmsMessagingTemplate jmsTemplate;
+
 
    public void sendToGetEvents(Destination destination, String event) {
       jmsTemplate.convertAndSend(destination, event);
@@ -77,11 +85,13 @@ public class Bet123BookieService {
 
    @JmsListener(destination = "footballMatches.bookies")
    public void getFootballMatches(String matchesJson) {
+
       // System.out.println("Bet123 Service get Map: " + matches);
       Gson gson = new Gson();
       footballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<FootballMatchInfo>>(){}.getType());
       System.out.println("Bet123Service get info: " + footballMatchesList.get(0).getHomeTeam());
    }
+
 
    public List<FootballMatchInfo> getFootballMatchesList() {
       return footballMatchesList;
@@ -126,5 +136,6 @@ public class Bet123BookieService {
       }
 
       return betInfoList;
+
    }
 }

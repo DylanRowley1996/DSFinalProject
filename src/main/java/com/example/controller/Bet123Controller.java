@@ -44,6 +44,7 @@ public class Bet123Controller {
       Notice that we need to send out and get info before the next step
       otherwise it will not work
       */
+
       Destination destination = new ActiveMQQueue("footballMatches.eventOrganiser");
       b1bs.sendToGetEvents(destination, "football");
       Destination destination2 = new ActiveMQQueue("basketballMatches.eventOrganiser");
@@ -60,6 +61,7 @@ public class Bet123Controller {
    public String betinbet123getHorseRace(Model model) {
       model.addAttribute("result","Basketball");
       model.addAttribute("bookie", "Bet123");
+
       List<BasketballMatchInfo> matchesList = b1bs.getBasketballMatchesList();
       // Create a map to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
@@ -73,6 +75,7 @@ public class Bet123Controller {
          currentMatchesMap.put(displayOnHTML, hrefInfo);
       }
       model.addAttribute("matchesMap", currentMatchesMap);
+
       return "BetNow";
    }
 
@@ -128,6 +131,7 @@ all bookie companies and events
    public String betinbet123getFootball(Model model) {
       model.addAttribute("result","Football");
       model.addAttribute("bookie", "Bet123");
+
       List<FootballMatchInfo> footballMatchesList = b1bs.getFootballMatchesList();
       // Create a map to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
@@ -142,6 +146,7 @@ all bookie companies and events
                     + matchInfo.getVisitingTeamWinProb() + "&"
                     + matchInfo.getDrawProb();
             currentMatchesMap.put(displayOnHTML, hrefInfo);
+
       }
       System.out.println("Controller get info: " + footballMatchesList.get(0).getHomeTeam());
       model.addAttribute("matchesMap", currentMatchesMap);

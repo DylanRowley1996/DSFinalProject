@@ -10,19 +10,22 @@ import com.mongodb.MongoClient;
 */
 public class EventOrganiserDB {
    // This method is used to keep the connection with the database
-   public DBCollection getFootballTable () {
+   public DBCollection getTable (String sport) {
       MongoClient mongo = new MongoClient("localhost", 27017);
       DB db = mongo.getDB("eventOrganiserDB");
-      DBCollection table = db.getCollection("FootballMatches");
+      DBCollection table = null;
 
-      return table;
-   }
-
-   public DBCollection getBasketballTable () {
-      MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("eventOrganiserDB");
-      DBCollection table = db.getCollection("BasketBall");
-
+      switch(sport) {
+         case "football":
+            table = db.getCollection("FootballMatches");
+            break;
+         case "basketball":
+            table = db.getCollection("BasketBall");
+            break;
+         case "horseracing":
+            table = db.getCollection("HorseRaces");
+            break;
+      }
       return table;
    }
 }

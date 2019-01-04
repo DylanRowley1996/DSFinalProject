@@ -14,9 +14,8 @@ public class DsBookieBusinessApplication {
 
    public static void main(String[] args) {
 
-//      PopulateDB
-//      PopulateDB dbPopulate = new PopulateDB();
-//      dbPopulate.populateDatabase();
+      PopulateDB dbPopulate = new PopulateDB();
+      dbPopulate.populateDatabase();
 
       SpringApplication.run(DsBookieBusinessApplication.class, args);
    }

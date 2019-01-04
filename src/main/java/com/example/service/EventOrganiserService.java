@@ -4,6 +4,7 @@ import com.example.dao.EventOrganiserDB;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.FootballMatchInfo;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import org.springframework.jms.annotation.JmsListener;
@@ -35,7 +36,7 @@ public class EventOrganiserService {
          // Create a list first
          List<FootballMatchInfo> matches = new ArrayList<>();
          /**** Find all the events and store in a list****/
-         cursor = eod.getFootballTable().find();
+         cursor = eod.getTable("football").find();
          // We only want 10 matches now
          int i = 0;
          for (DBObject object : cursor) {
@@ -47,6 +48,7 @@ public class EventOrganiserService {
             i++;
             if (i == 10) return gson.toJson(matches);
          }
+
       }
       return null;
    }
@@ -61,7 +63,7 @@ public class EventOrganiserService {
       // Create a list first
       List<BasketballMatchInfo> matches = new ArrayList<>();
       /**** Find all the events and store in a list****/
-      cursor = eod.getBasketballTable().find();
+      cursor = eod.getTable("basketball").find();
       // We only want 10 matches now
       int i = 0;
       for (DBObject object : cursor) {
