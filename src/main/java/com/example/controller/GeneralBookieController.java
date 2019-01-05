@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.domain.AuthInfo;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.jms.Destination;
 import javax.servlet.http.HttpSession;
@@ -111,6 +114,7 @@ public class GeneralBookieController {
                betInfo.setOdd(0.0);
                break;
          }
+         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
          model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet has already been placed, here are all your bets.");
       }
@@ -187,6 +191,7 @@ all bookie companies and events
                break;
          }
          System.out.println(betInfo.getOdd());
+         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
          model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet is placed, here are all your bets.");
       }

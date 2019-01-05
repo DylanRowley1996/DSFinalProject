@@ -16,7 +16,6 @@ public class Bet123Controller extends GeneralBookieController {
     private String bookie = "Bet123";
     private double oddCalcValue = 0.890143;
 
-
     @RequestMapping(value = "/Bet123", method = RequestMethod.GET)
     public String checkBookie(Model model, HttpSession session) {
         session.setAttribute("bookie", bookie);
