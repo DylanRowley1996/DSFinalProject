@@ -80,7 +80,7 @@ public class GeneralBookieService {
 
       Gson gson = new Gson();
       footballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<FootballMatchInfo>>(){}.getType());
-      System.out.println("Bet123Service get info: " + footballMatchesList.get(0).getHomeTeam());
+      System.out.println("BookieService get info: " + footballMatchesList.get(0).getHomeTeam());
    }
 
 
@@ -92,7 +92,7 @@ public class GeneralBookieService {
    public void getBasketballMatches(String matchesJson) {
       Gson gson = new Gson();
       basketballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<BasketballMatchInfo>>(){}.getType());
-      System.out.println("Bet123Service get info: " + basketballMatchesList.get(0).getHomeTeam());
+      System.out.println("BookieService get info: " + basketballMatchesList.get(0).getHomeTeam());
    }
 
    public List<BasketballMatchInfo> getBasketballMatchesList() {

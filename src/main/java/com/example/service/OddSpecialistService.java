@@ -14,12 +14,14 @@ import java.util.Map;
 @Service
 public class OddSpecialistService {
    // A basic method to generate odds
-   public List<Double> generateFootballOdds(List<Double> probabilities) {
+   public List<Double> generateFootballOdds(List<Double> probabilities, double calcNum) {
       // The odds generating method we use is simple
-      // Use 1 divide the win rate, then times 0.9
+      // Use 1 divide the win rate, then times calcNum (different for different bookies)
       List<Double> odds = new ArrayList<>();
       for (Double probability : probabilities) {
-         odds.add((1 / probability) * 0.9);
+         double odd = (1 / probability) * calcNum;
+         double roundOdd = Math.round(odd * 100.0) / 100.0;
+         odds.add(roundOdd);
       }
       return odds;
    }
