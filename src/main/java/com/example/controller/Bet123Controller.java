@@ -29,7 +29,7 @@ public class Bet123Controller extends GeneralBookieController {
 
     @RequestMapping(value = "/bet-in-Bet123/Basketball/{hrefInfo}", method = RequestMethod.GET)
     public String bookieCheckBasketballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
-        return super.bookieCheckBasketballOdds(hrefInfo, model, session, oddCalcValue);
+        return super.bookieCheckBasketballOdds(hrefInfo, model, session,bookie, oddCalcValue);
     }
 
     @RequestMapping(value = "/bet-in-Bet123/Basketball/placeBet", method = RequestMethod.POST)
