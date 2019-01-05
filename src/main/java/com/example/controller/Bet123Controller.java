@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import com.example.domain.BetInfo;
+import com.example.service.CentralBookieService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,6 +17,9 @@ public class Bet123Controller extends GeneralBookieController {
 
     private String bookie = "Bet123";
     private double oddCalcValue = 0.890143;
+
+    @Autowired
+    private CentralBookieService cbs;
 
     @RequestMapping(value = "/Bet123", method = RequestMethod.GET)
     public String checkBookie(Model model, HttpSession session) {
