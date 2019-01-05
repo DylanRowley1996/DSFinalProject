@@ -11,6 +11,7 @@
         <span th:text="${result}"></span></h1>
         <h1>Welcome to the COMP30020 Bookie Company<br> <span  th:text="${session.Auth!=null}?${session.Auth.getEmail()}:'(Sorry you are not logged in)'" ></span> </h1>
         <a th:href="@{/Bet123}" th:unless="${session.Auth==null}">Check Bet123!<br><br><br></a>
+        <a th:href="@{/PatrickPower}" th:unless="${session.Auth==null}">Check PatrickPower!<br><br><br></a>
         <a th:href="@{/register}" th:if="${session.Auth==null}">Register Now!<br></a>
         <a th:href="@{/login}" th:if="${session.Auth==null}">Log-In<br></a>
         <a th:href="@{/logout}" th:unless="${session.Auth==null}">Logout</a>

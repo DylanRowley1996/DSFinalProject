@@ -122,7 +122,6 @@ all bookie companies and events
  */
    public String bookieGetFootball(Model model) {
       model.addAttribute("result","Football");
-      model.addAttribute("bookie", "Bet123");
 
       List<FootballMatchInfo> footballMatchesList = gbs.getFootballMatchesList();
       // Create a map to store all the matches info for particular event
@@ -147,7 +146,6 @@ all bookie companies and events
 
    public String bookieCheckFootballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
       model.addAttribute("result","Football");
-      model.addAttribute("bookie", "Bet123");
       String[] hrefDetails = hrefInfo.split("\\&");
       List<Double> probabilities = new ArrayList<>();
       session.setAttribute("matchInfo", hrefDetails[0] + " " + hrefDetails[1] + " VS " + hrefDetails[2]);
@@ -164,7 +162,6 @@ all bookie companies and events
 
    public String bookiePlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session) {
-      model.addAttribute("bookie", "Bet123");
       String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
       if (betInfo.getSelection().equals("null") || matchInfo.equals("null"))   return "error";
