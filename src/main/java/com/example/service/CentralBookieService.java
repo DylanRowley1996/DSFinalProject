@@ -163,7 +163,6 @@ public class CentralBookieService implements BookieService {
    }
 
 
-
    // Create the jms template to send info to bookie companies
    @Resource
    private JmsMessagingTemplate jmsTemplate;
