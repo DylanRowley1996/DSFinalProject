@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.domain.UserInfo;
 import com.example.service.CentralBookieService;
 import com.example.domain.AuthInfo;
+import com.sun.xml.bind.v2.TODO;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ public class BookieController {
 
    @Autowired
    private CentralBookieService cbs;
+   private AuthInfo authInfo;
 
    /*
    Redirect to the index
@@ -55,7 +57,7 @@ public class BookieController {
    @RequestMapping(value = "/register", method = RequestMethod.POST)
    public String registerPost(Model model,
                               // Connect this to the "user" in register html file
-                              @ModelAttribute(value = "user") UserInfo userInfo,
+                              @ModelAttribute UserInfo userInfo,
                               HttpServletResponse response) {
       String info = "Sorry the email you entered has been registered. Please try again.";
       if (!cbs.ifExist(userInfo)) {
@@ -89,9 +91,12 @@ public class BookieController {
       // If match the database, add authInfo into the session
       if (result) {
          session.setAttribute("Auth", authInfo);
+         this.authInfo = authInfo;
       }
       model.addAttribute("result", cbs.getUsername(authInfo));
-      // Send the email to all the bookie companies
+
+      // Send the email address to all the bookie companies
+
       /*
       Notice that we need to send out and get info before the next step
       otherwise it will not work
@@ -108,16 +113,17 @@ public class BookieController {
    public String loginOut(HttpSession session) {
       //Delete the Auth in the session
       session.removeAttribute("Auth");
+      this.authInfo = null;
       return "index";
    }
 
    /**/
    @RequestMapping(value="/paymentProcessor", method=RequestMethod.GET)
-   public String paymentProcessing(Model model, @ModelAttribute(value = "authinfo") AuthInfo authInfo){
+   public String paymentProcessing(Model model, HttpSession session){
 
-      model.addAttribute("result", cbs.getUsername(authInfo));
-
-      return "paymentProcessor";
+      //model.addAttribute("username", cbs.getUsername(this.authInfo));
+      //session.setAttribute("Auth", this.authInfo);
+       return "paymentProcessor";
    }
 
 
