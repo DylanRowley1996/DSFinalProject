@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.domain.UserInfo;
 import com.example.service.CentralBookieService;
 import com.example.domain.AuthInfo;
+import com.example.service.GeneralBookieService;
 import com.sun.xml.bind.v2.TODO;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,10 @@ public class BookieController {
 
    @Autowired
    private CentralBookieService cbs;
+
+   @Autowired
+   private GeneralBookieService gbs;
+
    private AuthInfo authInfo;
 
    /*
@@ -138,7 +143,11 @@ public class BookieController {
 
       System.out.println("Amount: "+amount);
 
-      cbs.updateBalance(this.authInfo, session.getAttribute("bookie").toString(), amount);
+      if(gbs == null){
+         System.out.println("true");
+      }
+
+      gbs.updateBalance(this.authInfo, session.getAttribute("bookie").toString(), amount);
 
       return "bookie";
 

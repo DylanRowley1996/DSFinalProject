@@ -17,8 +17,6 @@ import java.util.regex.Pattern;
 @Service
 public class CentralBookieService implements BookieService {
 
-   // Create the connection with the database
-   private MongoClient mongo = new MongoClient("localhost", 27017);
    private CentralBookieDB cbd = new CentralBookieDB();
 
    /*
@@ -92,76 +90,34 @@ public class CentralBookieService implements BookieService {
       return false;
    }
 
-   @Override
-   public boolean bet(BetInfo betInfo) {
-      /**** Update ****/
-      // search document where name="mkyong" and update it with new values
-      BasicDBObject query = new BasicDBObject();
-      query.put("email", betInfo.getEmail());
-      DBCursor cursor = cbd.getTable().find(query);
-
-      while (cursor.hasNext()) {
-         int a = (int)cursor.next().get("balance");
-
-         // Generate a random number from (-50,50]
-         // TODO: Need to change to a real betting result later
-         final long l = System.currentTimeMillis();
-         final int i = (int)( l % 100 ) - 50;
-         a += i;
-
-         BasicDBObject newDocument = new BasicDBObject();
-         newDocument.put("balance", a);
-
-         BasicDBObject updateObj = new BasicDBObject();
-         updateObj.put("$set", newDocument);
-
-         cbd.getTable().update(query, updateObj);
-         return true;
-      }
-      return false;
-   }
-
-   @Override
-   public double getCurrentBalance(AuthInfo authInfo) {
-      /**** Find whether there are existing users****/
-      BasicDBObject searchQuery = new BasicDBObject();
-      searchQuery.append("email", authInfo.getEmail());
-      DBCursor cursor = cbd.getTable().find(searchQuery);
-
-      while (cursor.hasNext()) {
-         double a = (double) ((Integer)cursor.next().get("balance"));
-         return a;
-      }
-      return 0;
-   }
-
-   @Override
-   public void updateBalance(AuthInfo authInfo, String bookie, double amount) {
-
-      //Get the correct DB
-      DB db = this.mongo.getDB(bookie+"db");
-      DBCollection userCollection = db.getCollection("user");
-
-      // This computations aren't needed so explicitly but done for ease of checking
-      double currentBalance = getCurrentBalance(authInfo);
-      System.out.println("Current Balance: "+currentBalance);
-      double newBalance = currentBalance+amount;
-      System.out.println("New Balance: "+newBalance);
-
-
-      // Identify the document we want to find.
-      BasicDBObject searchQuery = new BasicDBObject();
-      searchQuery.put("email", authInfo.getEmail());
-
-      // Define what we want to update that document with
-      BasicDBObject updateQuery = new BasicDBObject();
-      updateQuery.append("$set", new BasicDBObject("balance", newBalance));
-
-      // Finally, update the DB
-      userCollection.update(searchQuery, updateQuery);
-
-   }
-
+//   @Override
+//   public boolean bet(BetInfo betInfo) {
+//      /**** Update ****/
+//      // search document where name="mkyong" and update it with new values
+//      BasicDBObject query = new BasicDBObject();
+//      query.put("email", betInfo.getEmail());
+//      DBCursor cursor = cbd.getTable().find(query);
+//
+//      while (cursor.hasNext()) {
+//         int a = (int)cursor.next().get("balance");
+//
+//         // Generate a random number from (-50,50]
+//         // TODO: Need to change to a real betting result later
+//         final long l = System.currentTimeMillis();
+//         final int i = (int)( l % 100 ) - 50;
+//         a += i;
+//
+//         BasicDBObject newDocument = new BasicDBObject();
+//         newDocument.put("balance", a);
+//
+//         BasicDBObject updateObj = new BasicDBObject();
+//         updateObj.put("$set", newDocument);
+//
+//         cbd.getTable().update(query, updateObj);
+//         return true;
+//      }
+//      return false;
+//   }
 
    // Create the jms template to send info to bookie companies
    @Resource

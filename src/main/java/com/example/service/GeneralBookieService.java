@@ -1,14 +1,13 @@
 package com.example.service;
 
 import com.example.dao.BookieDB;
+import com.example.domain.AuthInfo;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,9 @@ import java.util.List;
 */
 @Service
 public class GeneralBookieService {
+
+   // Create a connection to the DB.
+   private MongoClient mongo = new MongoClient("localhost", 27017);
 
    // Create a string to store user's email
    private String UserEmail = null;
@@ -58,6 +60,29 @@ public class GeneralBookieService {
       document.put("balance", 0.0);
       bDB.getUserTable(bookie).insert(document);
       return 0.0;
+   }
+
+   // Update the users balance with a given bookie.
+   public void updateBalance(AuthInfo authInfo, String bookie, double amount) {
+
+      // Calculate the new balance
+      double newBalance = getBalance(bookie)+amount;
+
+      //Get the correct DB
+      DB db = this.mongo.getDB(bookie+"DB");
+      DBCollection userCollection = db.getCollection("user");
+
+      // Identify the document we want to find.
+      BasicDBObject searchQuery = new BasicDBObject();
+      searchQuery.put("email", authInfo.getEmail());
+
+      // Define that we want to update the balance.
+      BasicDBObject updateQuery = new BasicDBObject();
+      updateQuery.append("$set", new BasicDBObject("balance", newBalance));
+
+      // Finally, update the DB
+      userCollection.update(searchQuery, updateQuery);
+
    }
 
    // The send message to get matches
