@@ -11,7 +11,7 @@
     <li th:each="map : ${oddsMap}"><a th:text="${map.key}"></a> : <a th:text="${map.value}"></a></li>
 </ul>
 <br>
-<form th:action="@{'/bet-in-bet123/' + ${result} + '/placeBet'}" th:object="${betinfo}" method="post">
+<form th:action="@{'/bet-in-' + ${bookie} + '/' + ${result} + '/placeBet'}" th:object="${betinfo}" method="post">
     <label for="selection">Please select which one you want to bet on (No Tie for basketball match): </label>
     <select class="selection" name="selection">
         <option value ="null">Select:</option>

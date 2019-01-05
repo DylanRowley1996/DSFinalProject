@@ -4,7 +4,6 @@ import com.example.dao.Bet123DB;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
-import com.example.dao.EventOrganiserDB;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
@@ -24,7 +23,7 @@ import java.util.List;
 @date 03/12/2018
 */
 @Service
-public class Bet123BookieService {
+public class GeneralBookieService {
 
    // Create a string to store user's email
    private String UserEmail = null;
@@ -38,7 +37,6 @@ public class Bet123BookieService {
 
    // Create the connection with the database
    private Bet123DB b1d = new Bet123DB();
-   private EventOrganiserDB eoDB = new EventOrganiserDB();
 
    // Get the user's balance
    public double getBalance() {
@@ -80,7 +78,6 @@ public class Bet123BookieService {
    @JmsListener(destination = "footballMatches.bookies")
    public void getFootballMatches(String matchesJson) {
 
-      // System.out.println("Bet123 Service get Map: " + matches);
       Gson gson = new Gson();
       footballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<FootballMatchInfo>>(){}.getType());
       System.out.println("Bet123Service get info: " + footballMatchesList.get(0).getHomeTeam());
