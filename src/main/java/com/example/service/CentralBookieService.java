@@ -144,7 +144,10 @@ public class CentralBookieService implements BookieService {
 
       // This computations aren't needed so explicitly but done for ease of checking
       double currentBalance = getCurrentBalance(authInfo);
+      System.out.println("Current Balance: "+currentBalance);
       double newBalance = currentBalance+amount;
+      System.out.println("New Balance: "+newBalance);
+
 
       // Identify the document we want to find.
       BasicDBObject searchQuery = new BasicDBObject();

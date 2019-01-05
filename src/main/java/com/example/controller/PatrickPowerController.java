@@ -16,8 +16,8 @@ public class PatrickPowerController extends GeneralBookieController {
     private double oddCalcValue = 0.6099321;
 
     @RequestMapping(value = "/PatrickPower", method = RequestMethod.GET)
-    public String checkBookie(Model model) {
-        return super.checkBookie(model, bookie);
+    public String checkBookie(Model model, HttpSession session) {
+        return super.checkBookie(model, session, bookie);
     }
 
     @RequestMapping(value = "/bet-in-PatrickPower/Basketball", method = RequestMethod.GET)
