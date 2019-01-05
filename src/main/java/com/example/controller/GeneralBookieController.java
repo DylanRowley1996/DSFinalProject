@@ -97,6 +97,16 @@ public class GeneralBookieController {
 
    public String bookiePlaceBetBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session, String bookie) {
+
+       // Does player have sufficient funds? This will determine the page rendered
+      if(hasSufficientFunds(betInfo.getAmount(), cbs.getBalance(bookie))){
+         session.setAttribute("sufficientFunds", true);
+         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
+      }
+      else{
+         session.setAttribute("sufficientFunds", false);
+      }
+
        model.addAttribute("bookie", bookie);
        String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
@@ -114,7 +124,6 @@ public class GeneralBookieController {
                betInfo.setOdd(0.0);
                break;
          }
-         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
          model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet has been placed, here are all your bets.");
       }
@@ -170,6 +179,16 @@ all bookie companies and events
 
    public String bookiePlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session, String bookie) {
+
+      // Does player have sufficient funds? This will determine the page rendered
+      if(hasSufficientFunds(betInfo.getAmount(), cbs.getBalance(bookie))){
+         session.setAttribute("sufficientFunds", true);
+         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
+      }
+      else{
+         session.setAttribute("sufficientFunds", false);
+      }
+
        model.addAttribute("bookie", bookie);
       String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
@@ -190,8 +209,6 @@ all bookie companies and events
                betInfo.setOdd(0.0);
                break;
          }
-         System.out.println(betInfo.getOdd());
-         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
          model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet is placed, here are all your bets.");
       }
@@ -203,5 +220,9 @@ all bookie companies and events
       model.addAttribute("result", "Your bet is placed, here are all your bets.");
 
       return "Bets";
+   }
+
+   public boolean hasSufficientFunds(double betAmount , double balance) {
+      return betAmount < balance;
    }
 }
