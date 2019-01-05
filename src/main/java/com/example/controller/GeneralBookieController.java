@@ -112,7 +112,7 @@ public class GeneralBookieController {
                break;
          }
          model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
-         model.addAttribute("result", "Your bet has already been placed, here are all your bets.");
+         model.addAttribute("result", "Your bet has been placed, here are all your bets.");
       }
       return "Bets";
    }
