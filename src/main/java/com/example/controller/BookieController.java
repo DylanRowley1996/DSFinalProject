@@ -138,16 +138,12 @@ public class BookieController {
    @RequestMapping(value="/paymentProcessor", method=RequestMethod.POST)
    public String processPayment(Model model, HttpSession session, @ModelAttribute(value = "amount") double amount) {
 
-      //Set-up model for bookie.html page.
-      model.addAttribute("bookie", "Bet123");
-
-      System.out.println("Amount: "+amount);
-
-      if(gbs == null){
-         System.out.println("true");
-      }
-
+      // Update the balance.
       gbs.updateBalance(this.authInfo, session.getAttribute("bookie").toString(), amount);
+
+      //Set-up model for bookie.html page.
+      model.addAttribute("bookie", session.getAttribute("bookie"));
+      model.addAttribute("balance", gbs.getBalance(session.getAttribute("bookie").toString()));
 
       return "bookie";
 
