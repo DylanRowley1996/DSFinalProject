@@ -97,6 +97,10 @@ public class GeneralBookieController {
 
    public String bookiePlaceBetBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session, String bookie) {
+
+       // Does player have sufficient funds? This will determine the page rendered
+       session.setAttribute("sufficientFunds", !(betInfo.getAmount() > cbs.getBalance(bookie)));
+
        model.addAttribute("bookie", bookie);
        String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
@@ -170,6 +174,10 @@ all bookie companies and events
 
    public String bookiePlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session, String bookie) {
+
+       session.setAttribute("sufficientFunds", !(betInfo.getAmount() > cbs.getBalance(bookie)));
+
+
        model.addAttribute("bookie", bookie);
       String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
@@ -197,4 +205,5 @@ all bookie companies and events
       }
       return "Bets";
    }
+
 }

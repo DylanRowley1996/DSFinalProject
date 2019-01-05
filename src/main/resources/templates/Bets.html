@@ -6,21 +6,28 @@
 </head>
 <body>
 <h1>Orders you submitted on <span th:text="${bookie}"></span>!</h1>
-<b><span th:text="${result}"></span></b>
-<table border="1">
-    <tr>
-        <th>Match</th>
-        <th>Amount</th>
-        <th>Selection</th>
-        <th>Odd</th>
-    </tr>
-    <tr  th:each="info : ${betsTable}" >
-        <th th:text="${info.match}"></th>
-        <th th:text="${info.amount}"></th>
-        <th th:text="${info.selection}"></th>
-        <th th:text="${info.odd}"></th>
-    </tr>
-</table>
+
+<div th:if="${session.sufficientFunds}==false">
+    <span>You do not have sufficient funds. Please add funds to your account</span>
+</div>
+
+<div th:if="${session.sufficientFunds}!=false">
+    <b><span th:text="${result}"></span></b>
+    <table th:if{}border="1">
+        <tr>
+            <th>Match</th>
+            <th>Amount</th>
+            <th>Selection</th>
+            <th>Odd</th>
+        </tr>
+        <tr  th:each="info : ${betsTable}" >
+            <th th:text="${info.match}"></th>
+            <th th:text="${info.amount}"></th>
+            <th th:text="${info.selection}"></th>
+            <th th:text="${info.odd}"></th>
+        </tr>
+    </table>
+</div>
 
     <a th:href="@{/index}">Return to homepage</a>
 
