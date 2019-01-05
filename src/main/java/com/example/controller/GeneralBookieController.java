@@ -3,7 +3,7 @@ package com.example.controller;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
-import com.example.service.GeneralBookieService;
+import com.example.service.CentralBookieService;
 import com.example.service.OddSpecialistService;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.jms.Destination;
 import javax.servlet.http.HttpSession;
@@ -29,7 +27,7 @@ import java.util.Map;
 public class GeneralBookieController {
 
    @Autowired
-   private GeneralBookieService gbs;
+   private CentralBookieService cbs;
 
    @Autowired
    private OddSpecialistService osl;
@@ -39,16 +37,16 @@ public class GeneralBookieController {
     */
    public String checkBookie(Model model, HttpSession session, String bookie) {
        model.addAttribute("bookie", bookie);
-       model.addAttribute("balance", gbs.getBalance(bookie));
+       model.addAttribute("balance", cbs.getBalance(bookie));
       /*
       Notice that we need to send out and get info before the next step
       otherwise it will not work
       */
 
       Destination destination = new ActiveMQQueue("footballMatches.eventOrganiser");
-      gbs.sendToGetEvents(destination, "football");
+      cbs.sendToGetEvents(destination, "football");
       Destination destination2 = new ActiveMQQueue("basketballMatches.eventOrganiser");
-      gbs.sendToGetEvents(destination2, "basketball");
+      cbs.sendToGetEvents(destination2, "basketball");
       return "bookie";
    }
 
@@ -61,7 +59,7 @@ public class GeneralBookieController {
        model.addAttribute("bookie", bookie);
        model.addAttribute("result","Basketball");
 
-      List<BasketballMatchInfo> matchesList = gbs.getBasketballMatchesList();
+      List<BasketballMatchInfo> matchesList = cbs.getBasketballMatchesList();
       // Create a map to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
       for (BasketballMatchInfo matchInfo : matchesList) {
@@ -113,7 +111,7 @@ public class GeneralBookieController {
                betInfo.setOdd(0.0);
                break;
          }
-         model.addAttribute("betsTable", gbs.placeBet(betInfo, bookie));
+         model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet has already been placed, here are all your bets.");
       }
       return "Bets";
@@ -128,7 +126,7 @@ all bookie companies and events
        model.addAttribute("bookie", bookie);
        model.addAttribute("result","Football");
 
-      List<FootballMatchInfo> footballMatchesList = gbs.getFootballMatchesList();
+      List<FootballMatchInfo> footballMatchesList = cbs.getFootballMatchesList();
       // Create a map to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
       for (FootballMatchInfo matchInfo : footballMatchesList) {
@@ -189,7 +187,7 @@ all bookie companies and events
                break;
          }
          System.out.println(betInfo.getOdd());
-         model.addAttribute("betsTable", gbs.placeBet(betInfo, bookie));
+         model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet is placed, here are all your bets.");
       }
       return "Bets";
