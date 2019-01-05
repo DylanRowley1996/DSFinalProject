@@ -25,13 +25,13 @@ public class CentralBookieService implements BookieService {
    // Create a connection to the DB.
    private MongoClient mongo = new MongoClient("localhost", 27017);
    // Create a string to store user's email
-   private String UserEmail = null;
+   private String userEmail = null;
 
    // The jms listener to get the email from the central bookie
    @JmsListener(destination = "email.bookies")
    public void receiveEmail(String email) {
-      UserEmail = email;
-      System.out.println("Consumer get email: " + UserEmail);
+      userEmail = email;
+      System.out.println("Consumer get email: " + userEmail);
    }
 
    /*
@@ -139,7 +139,7 @@ public class CentralBookieService implements BookieService {
       System.out.println("Getting balance... ...");
       /**** Find whether the database has same info****/
       BasicDBObject searchQuery = new BasicDBObject();
-      searchQuery.append("email", UserEmail);
+      searchQuery.append("email", userEmail);
       DBCursor cursor = bDB.getUserTable(bookie).find(searchQuery);
 
       while (cursor.hasNext()) {
@@ -150,7 +150,7 @@ public class CentralBookieService implements BookieService {
       /**** Insert ****/
       // Create a document to store key and value
       BasicDBObject document = new BasicDBObject();
-      document.put("email", UserEmail);
+      document.put("email", userEmail);
       document.put("balance", 0.0);
       bDB.getUserTable(bookie).insert(document);
       return 0.0;
@@ -219,14 +219,14 @@ public class CentralBookieService implements BookieService {
       BasicDBObject document = new BasicDBObject();
       document.put("match", betInfo.getMatch());
       document.put("amount", betInfo.getAmount());
-      document.put("email", betInfo.getEmail());
+      document.put("email", userEmail);
       document.put("selection", betInfo.getSelection());
       document.put("odd", betInfo.getOdd());
       bDB.getBetsTable(bookie).insert(document);
 
       /**** Find whether the rest bets and return****/
       BasicDBObject searchQuery = new BasicDBObject();
-      searchQuery.append("email", betInfo.getEmail());
+      searchQuery.append("email", userEmail);
       DBCursor cursor = bDB.getBetsTable(bookie).find(searchQuery);
 
       List<BetInfo> betInfoList = new ArrayList<>();
