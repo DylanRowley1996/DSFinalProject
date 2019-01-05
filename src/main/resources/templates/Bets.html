@@ -5,13 +5,13 @@
     <title>Orders</title>
 </head>
 <body>
-<h1>Orders you submitted on <span th:text="${bookie}"></span>!</h1>
 
 <div th:if="${session.sufficientFunds}==false">
     <span>You do not have sufficient funds. Please add funds to your account</span>
 </div>
 
 <div th:if="${session.sufficientFunds}!=false">
+    <h1>Orders you submitted on <span th:text="${bookie}"></span>!</h1>
     <b><span th:text="${result}"></span></b>
     <table th:if{}border="1">
         <tr>
