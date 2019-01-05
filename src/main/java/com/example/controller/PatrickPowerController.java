@@ -17,6 +17,7 @@ public class PatrickPowerController extends GeneralBookieController {
 
     @RequestMapping(value = "/PatrickPower", method = RequestMethod.GET)
     public String checkBookie(Model model, HttpSession session) {
+        session.setAttribute("bookie", "PatrickPower");
         return super.checkBookie(model, session, bookie);
     }
 
