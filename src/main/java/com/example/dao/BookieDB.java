@@ -8,18 +8,18 @@ import com.mongodb.MongoClient;
 @author Qinyuan Zhang
 @date 03/12/2018
 */
-public class Bet123DB {
+public class BookieDB {
    // This method is used to keep the connection with the database
-   public DBCollection getTable () {
+   public DBCollection getUserTable(String bookie) {
       MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("bet123db");
+      DB db = mongo.getDB(bookie+"DB");
       DBCollection table = db.getCollection("user");
       return table;
    }
    // This method is used to keep the connection with the database
-   public DBCollection getBetsTable() {
+   public DBCollection getBetsTable(String bookie) {
       MongoClient mongo = new MongoClient("localhost", 27017);
-      DB db = mongo.getDB("bet123db");
+      DB db = mongo.getDB(bookie+"DB");
       DBCollection table = db.getCollection("bet");
       return table;
    }
