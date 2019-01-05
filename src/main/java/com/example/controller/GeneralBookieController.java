@@ -37,12 +37,14 @@ public class GeneralBookieController {
    /*
    The GET method to check bet123
     */
-   public String checkBookie(Model model, HttpSession session) {
-      model.addAttribute("balance", gbs.getBalance());
+   public String checkBookie(Model model, HttpSession session, String bookie) {
+       model.addAttribute("bookie", bookie);
+       model.addAttribute("balance", gbs.getBalance());
       /*
       Notice that we need to send out and get info before the next step
       otherwise it will not work
       */
+
       Destination destination = new ActiveMQQueue("footballMatches.eventOrganiser");
       gbs.sendToGetEvents(destination, "football");
       Destination destination2 = new ActiveMQQueue("basketballMatches.eventOrganiser");
@@ -55,8 +57,9 @@ public class GeneralBookieController {
    Notice that we want to use one single frontend template for
    all bookie companies and events
     */
-   public String bookieGetBasketball(Model model) {
-      model.addAttribute("result","Basketball");
+   public String bookieGetBasketball(Model model, String bookie) {
+       model.addAttribute("bookie", bookie);
+       model.addAttribute("result","Basketball");
 
       List<BasketballMatchInfo> matchesList = gbs.getBasketballMatchesList();
       // Create a map to store all the matches info for particular event
@@ -75,13 +78,14 @@ public class GeneralBookieController {
       return "BetNow";
    }
 
-   public String bookieCheckBasketballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
-      model.addAttribute("result","Basketball");
+   public String bookieCheckBasketballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session, String bookie, double calcNum) {
+       model.addAttribute("bookie", bookie);
+       model.addAttribute("result","Basketball");
       String[] hrefDetails = hrefInfo.split("\\&");
       List<Double> probabilities = new ArrayList<>();
       session.setAttribute("matchInfo", hrefDetails[0] + " VS " + hrefDetails[1]);
       for (int i = 2 ; i < 4 ; i++) probabilities.add(Double.valueOf(hrefDetails[i]));
-      List<Double> odds = osl.generateFootballOdds(probabilities);
+      List<Double> odds = osl.generateFootballOdds(probabilities, calcNum);
       session.setAttribute("odds", odds);
       Map<String, Double> displayInfo =  new HashMap<>();
       displayInfo.put(hrefDetails[0] + " (h)", odds.get(0));
@@ -91,8 +95,9 @@ public class GeneralBookieController {
    }
 
    public String bookiePlaceBetBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
-                                               HttpSession session) {
-      String matchInfo = (String) session.getAttribute("matchInfo");
+                                               HttpSession session, String bookie) {
+       model.addAttribute("bookie", bookie);
+       String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
       if (betInfo.getSelection().equals("null") || betInfo.getSelection().equals("tie") || matchInfo.equals("null"))   return "error";
       else {
@@ -119,9 +124,9 @@ The GET method leads to the html file
 Notice that we want to use one single frontend template for
 all bookie companies and events
  */
-   public String bookieGetFootball(Model model) {
-      model.addAttribute("result","Football");
-      model.addAttribute("bookie", "Bet123");
+   public String bookieGetFootball(Model model, String bookie) {
+       model.addAttribute("bookie", bookie);
+       model.addAttribute("result","Football");
 
       List<FootballMatchInfo> footballMatchesList = gbs.getFootballMatchesList();
       // Create a map to store all the matches info for particular event
@@ -144,14 +149,14 @@ all bookie companies and events
       return "BetNow";
    }
 
-   public String bookieCheckFootballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
-      model.addAttribute("result","Football");
-      model.addAttribute("bookie", "Bet123");
+   public String bookieCheckFootballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session, String bookie, double calcNum) {
+       model.addAttribute("bookie", bookie);
+       model.addAttribute("result","Football");
       String[] hrefDetails = hrefInfo.split("\\&");
       List<Double> probabilities = new ArrayList<>();
       session.setAttribute("matchInfo", hrefDetails[0] + " " + hrefDetails[1] + " VS " + hrefDetails[2]);
       for (int i = 3 ; i < 6 ; i++) probabilities.add(Double.valueOf(hrefDetails[i]));
-      List<Double> odds = osl.generateFootballOdds(probabilities);
+      List<Double> odds = osl.generateFootballOdds(probabilities, calcNum);
       session.setAttribute("odds", odds);
       Map<String, Double> displayInfo =  new HashMap<>();
       displayInfo.put(hrefDetails[1] + " (h)", odds.get(0));
@@ -162,8 +167,8 @@ all bookie companies and events
    }
 
    public String bookiePlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
-                                               HttpSession session) {
-      model.addAttribute("bookie", "Bet123");
+                                               HttpSession session, String bookie) {
+       model.addAttribute("bookie", bookie);
       String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
       if (betInfo.getSelection().equals("null") || matchInfo.equals("null"))   return "error";
