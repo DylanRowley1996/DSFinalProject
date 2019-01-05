@@ -10,9 +10,10 @@
 <h1>Welcome to the <span th:text="${bookie}"></span><br> <span  th:text="${session.Auth!=null}?${session.Auth.getEmail()}:'(Sorry you are not logged in)'" ></span></h1>
 <p>Your balance in <span th:text="${bookie}"></span>: &euro; <span th:text="${balance}"></span></p>
 <h3>Bet in <span th:text="${bookie}"></span>!<br></h3>
-<a th:href="@{|/bet-in-${bookie}/HorseRace|}" th:unless="${session.Auth==null}">Horse Race<br></a>
-<a th:href="@{|/bet-in-${bookie}/Football|}" th:unless="${session.Auth==null}">Football<br></a>
-<a th:href="@{|/bet-in-${bookie}/Basketball|}" th:unless="${session.Auth==null}">Basketball<br><br><br></a>
+<a th:href="@{|/${bookie}/HorseRace|}" th:unless="${session.Auth==null}">Horse Race<br></a>
+<a th:href="@{|/${bookie}/Football|}" th:unless="${session.Auth==null}">Football<br></a>
+<a th:href="@{|/${bookie}/Basketball|}" th:unless="${session.Auth==null}">Basketball<br><br><br></a>
+<a th:href="@{|/${bookie}/bets|}" th:unless="${session.Auth==null}">View Current Bets<br></a>
 <a th:href="@{/paymentProcessor}" th:unless="${session.Auth==null}">Update Balance<br></a>
 <a href = "http://localhost:8080/index">Bring me back to the homepage!</a>
 </body>

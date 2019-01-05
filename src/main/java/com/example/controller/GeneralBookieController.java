@@ -197,4 +197,11 @@ all bookie companies and events
       }
       return "Bets";
    }
+
+   public String bookieViewBets(Model model, String bookie) {
+      model.addAttribute("betsTable", cbs.getBetInfoList(bookie));
+      model.addAttribute("result", "Your bet is placed, here are all your bets.");
+
+      return "Bets";
+   }
 }

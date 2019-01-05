@@ -8,7 +8,7 @@
 <h1>Bet <span th:text="${result}"></span> now in <span th:text="${bookie}"></span>!</h1>
 <b>Select the matches you want to bet on:</b><br>
 <ul>
-    <li th:each="map : ${matchesMap}"><a th:href="@{'/bet-in-' + ${bookie} + '/' + ${result} + '/' + ${map.value}}" th:text="${map.key}"></a></li>
+    <li th:each="map : ${matchesMap}"><a th:href="@{'/' + ${bookie} + '/' + ${result} + '/' + ${map.value}}" th:text="${map.key}"></a></li>
 </ul>
 <a href = "http://localhost:8080/index">Bring me back to the homepage!</a>
 </body>
