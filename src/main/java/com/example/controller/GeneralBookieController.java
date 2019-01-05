@@ -39,7 +39,7 @@ public class GeneralBookieController {
     */
    public String checkBookie(Model model, HttpSession session, String bookie) {
        model.addAttribute("bookie", bookie);
-       model.addAttribute("balance", gbs.getBalance());
+       model.addAttribute("balance", gbs.getBalance(bookie));
       /*
       Notice that we need to send out and get info before the next step
       otherwise it will not work
@@ -113,7 +113,7 @@ public class GeneralBookieController {
                betInfo.setOdd(0.0);
                break;
          }
-         model.addAttribute("betsTable", gbs.placeBet(betInfo));
+         model.addAttribute("betsTable", gbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet has already been placed, here are all your bets.");
       }
       return "Bets";
@@ -189,7 +189,7 @@ all bookie companies and events
                break;
          }
          System.out.println(betInfo.getOdd());
-         model.addAttribute("betsTable", gbs.placeBet(betInfo));
+         model.addAttribute("betsTable", gbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet is placed, here are all your bets.");
       }
       return "Bets";

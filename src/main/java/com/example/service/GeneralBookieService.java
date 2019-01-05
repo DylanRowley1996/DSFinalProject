@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.dao.Bet123DB;
+import com.example.dao.BookieDB;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
@@ -36,15 +36,15 @@ public class GeneralBookieService {
    }
 
    // Create the connection with the database
-   private Bet123DB b1d = new Bet123DB();
+   private BookieDB bDB = new BookieDB();
 
    // Get the user's balance
-   public double getBalance() {
+   public double getBalance(String bookie) {
       System.out.println("Getting balance... ...");
       /**** Find whether the database has same info****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", UserEmail);
-      DBCursor cursor = b1d.getTable().find(searchQuery);
+      DBCursor cursor = bDB.getUserTable(bookie).find(searchQuery);
 
       while (cursor.hasNext()) {
          return Double.valueOf(cursor.next().get("balance").toString());
@@ -56,7 +56,7 @@ public class GeneralBookieService {
       BasicDBObject document = new BasicDBObject();
       document.put("email", UserEmail);
       document.put("balance", 0.0);
-      b1d.getTable().insert(document);
+      bDB.getUserTable(bookie).insert(document);
       return 0.0;
    }
 
@@ -77,7 +77,6 @@ public class GeneralBookieService {
 
    @JmsListener(destination = "footballMatches.bookies")
    public void getFootballMatches(String matchesJson) {
-
       Gson gson = new Gson();
       footballMatchesList = gson.fromJson(matchesJson, new TypeToken<List<FootballMatchInfo>>(){}.getType());
       System.out.println("BookieService get info: " + footballMatchesList.get(0).getHomeTeam());
@@ -99,7 +98,7 @@ public class GeneralBookieService {
       return basketballMatchesList;
    }
 
-   public List<BetInfo> placeBet(BetInfo betInfo) {
+   public List<BetInfo> placeBet(BetInfo betInfo, String bookie) {
       // Create a document to store the bet
       BasicDBObject document = new BasicDBObject();
       document.put("match", betInfo.getMatch());
@@ -107,12 +106,12 @@ public class GeneralBookieService {
       document.put("email", betInfo.getEmail());
       document.put("selection", betInfo.getSelection());
       document.put("odd", betInfo.getOdd());
-      b1d.getBetsTable().insert(document);
+      bDB.getBetsTable(bookie).insert(document);
 
       /**** Find whether the rest bets and return****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", betInfo.getEmail());
-      DBCursor cursor = b1d.getBetsTable().find(searchQuery);
+      DBCursor cursor = bDB.getBetsTable(bookie).find(searchQuery);
 
       List<BetInfo> betInfoList = new ArrayList<>();
       while (cursor.hasNext()) {

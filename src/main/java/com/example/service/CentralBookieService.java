@@ -139,7 +139,7 @@ public class CentralBookieService implements BookieService {
    public void updateBalance(AuthInfo authInfo, String bookie, double amount) {
 
       //Get the correct DB
-      DB db = this.mongo.getDB(bookie.toLowerCase()+"db");
+      DB db = this.mongo.getDB(bookie+"db");
       DBCollection userCollection = db.getCollection("user");
 
       // This computations aren't needed so explicitly but done for ease of checking
