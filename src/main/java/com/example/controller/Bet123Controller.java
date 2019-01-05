@@ -43,12 +43,12 @@ public class Bet123Controller extends GeneralBookieController {
         return super.bookieGetFootball(model, bookie);
     }
 
-    @RequestMapping(value = "/bet-in-bookie/Football/{hrefInfo}", method = RequestMethod.GET)
+    @RequestMapping(value = "/bet-in-Bet123/Football/{hrefInfo}", method = RequestMethod.GET)
     public String bookieCheckFootballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
         return super.bookieCheckFootballOdds(hrefInfo, model, session, bookie, oddCalcValue);
     }
 
-    @RequestMapping(value = "/bet-in-bookie/Football/placeBet", method = RequestMethod.POST)
+    @RequestMapping(value = "/bet-in-Bet123/Football/placeBet", method = RequestMethod.POST)
     public String bookiePlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                          HttpSession session) {
         return super.bookiePlaceBetFootball(betInfo, model, session, bookie);
