@@ -13,6 +13,7 @@
 <a th:href="@{|/bet-in-${bookie}/HorseRace|}" th:unless="${session.Auth==null}">Horse Race<br></a>
 <a th:href="@{|/bet-in-${bookie}/Football|}" th:unless="${session.Auth==null}">Football<br></a>
 <a th:href="@{|/bet-in-${bookie}/Basketball|}" th:unless="${session.Auth==null}">Basketball<br><br><br></a>
+<a th:href="@{/paymentProcessor}" th:unless="${session.Auth==null}">Update Balance<br></a>
 <a href = "http://localhost:8080/index">Bring me back to the homepage!</a>
 </body>
 </html>

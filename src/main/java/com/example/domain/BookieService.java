@@ -8,5 +8,6 @@ public interface BookieService extends Service{
    public String registerUser(UserInfo userInfo) throws IOException;
    public boolean ifExist(UserInfo userInfo) throws IOException;
    public boolean bet(BetInfo betInfo) throws IOException;
-   public int getCurrentBalance(AuthInfo authInfo) throws IOException;
+   public double getCurrentBalance(AuthInfo authInfo) throws IOException;
+   public void updateBalance(AuthInfo authInfo, String bookie, double amount);
 }

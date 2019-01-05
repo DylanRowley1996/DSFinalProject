@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 public class CentralBookieService implements BookieService {
 
    // Create the connection with the database
+   private MongoClient mongo = new MongoClient("localhost", 27017);
    private CentralBookieDB cbd = new CentralBookieDB();
 
    /*
@@ -121,18 +122,44 @@ public class CentralBookieService implements BookieService {
    }
 
    @Override
-   public int getCurrentBalance(AuthInfo authInfo) {
+   public double getCurrentBalance(AuthInfo authInfo) {
       /**** Find whether there are existing users****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", authInfo.getEmail());
       DBCursor cursor = cbd.getTable().find(searchQuery);
 
       while (cursor.hasNext()) {
-         int a = (int)cursor.next().get("balance");
+         double a = (double) ((Integer)cursor.next().get("balance"));
          return a;
       }
       return 0;
    }
+
+   @Override
+   public void updateBalance(AuthInfo authInfo, String bookie, double amount) {
+
+      //Get the correct DB
+      DB db = this.mongo.getDB(bookie.toLowerCase()+"db");
+      DBCollection userCollection = db.getCollection("user");
+
+      // This computations aren't needed so explicitly but done for ease of checking
+      double currentBalance = getCurrentBalance(authInfo);
+      double newBalance = currentBalance+amount;
+
+      // Identify the document we want to find.
+      BasicDBObject searchQuery = new BasicDBObject();
+      searchQuery.put("email", authInfo.getEmail());
+
+      // Define what we want to update that document with
+      BasicDBObject updateQuery = new BasicDBObject();
+      updateQuery.append("$set", new BasicDBObject("balance", newBalance));
+
+      // Finally, update the DB
+      userCollection.update(searchQuery, updateQuery);
+
+   }
+
+
 
    // Create the jms template to send info to bookie companies
    @Resource

@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
     <head>
         <meta charset="UTF-8">
         <title>Title</title>
     </head>
+
     <body>
 
-    <!--<h1><span th:text=${result}"></span></h1>-->
+    <h1><span th:text="${username}"></span></h1>
+    <h1><span th:text="${session.bookie}"></span></h1>
 
     <div class="form-popup" id="myForm">
-            <form class="form-container">
+            <form th:action="@{/paymentProcessor}" class="form-container" method="post">
+                <!--<label><b>Email</b></label><input type="text" placeholder="Enter Email Address" required/>-->
                 <h1>Visa</h1>
-
-                <label><b>Card Number</b></label>
-                <input type="text" placeholder="Enter Card Number" required>
-
-                <label><b>Expiry Date</b></label>
-                <input type="date" placeholder="Enter expiry date" required>
-
-                <button type="submit" class="btn">Login</button>
-                <button type="submit" class="btn cancel" onclick="closeForm()">Close</button>
+                <label><b>Card Number</b></label><input type="text" minlength="16" maxlength="16" name="value" placeholder="Enter Card Number" required/>
+                <label><b>Expiry Date</b></label><input type="month"  nameplaceholder="Enter expiry date" required/>
+                <label><b>Amount</b></label><input type="number" min="0"  name="amount" id="amount" placeholder="Amount" required/>
+                <button type="submit" class="btn">Confirm</button>
             </form>
-        </div>
+    </div>
+
     </body>
+
 </html>

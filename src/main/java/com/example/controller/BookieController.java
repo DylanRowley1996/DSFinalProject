@@ -117,14 +117,33 @@ public class BookieController {
       return "index";
    }
 
-   /**/
-   @RequestMapping(value="/paymentProcessor", method=RequestMethod.GET)
-   public String paymentProcessing(Model model, HttpSession session){
+   /*
 
-      //model.addAttribute("username", cbs.getUsername(this.authInfo));
-      //session.setAttribute("Auth", this.authInfo);
-       return "paymentProcessor";
+   */
+   @RequestMapping(value="/paymentProcessor", method=RequestMethod.GET)
+   public String displayPaymentMethod(Model model, HttpSession session) {
+      System.out.println((String) session.getAttribute("bookie"));
+      //model.addAttribute("bookie", session.getAttribute("bookie"));
+      model.addAttribute("username", cbs.getUsername(this.authInfo));
+      session.setAttribute("Auth", this.authInfo);
+      return "paymentProcessor";
+
    }
+
+   @RequestMapping(value="/paymentProcessor", method=RequestMethod.POST)
+   public String processPayment(Model model, HttpSession session, @ModelAttribute(value = "amount") double amount) {
+
+      //Set-up model for bookie.html page.
+      model.addAttribute("bookie", "Bet123");
+
+      System.out.println("Amount: "+amount);
+
+      cbs.updateBalance(this.authInfo, session.getAttribute("bookie").toString(), amount);
+
+      return "bookie";
+
+   }
+
 
 
 }

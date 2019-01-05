@@ -37,13 +37,12 @@ public class GeneralBookieController {
    /*
    The GET method to check bet123
     */
-   public String checkBookie(Model model) {
+   public String checkBookie(Model model, HttpSession session) {
       model.addAttribute("balance", gbs.getBalance());
       /*
       Notice that we need to send out and get info before the next step
       otherwise it will not work
       */
-
       Destination destination = new ActiveMQQueue("footballMatches.eventOrganiser");
       gbs.sendToGetEvents(destination, "football");
       Destination destination2 = new ActiveMQQueue("basketballMatches.eventOrganiser");

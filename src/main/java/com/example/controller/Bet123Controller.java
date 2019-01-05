@@ -14,9 +14,10 @@ import javax.servlet.http.HttpSession;
 public class Bet123Controller extends GeneralBookieController {
 
     @RequestMapping(value = "/Bet123", method = RequestMethod.GET)
-    public String checkBookie(Model model) {
+    public String checkBookie(Model model, HttpSession session) {
         model.addAttribute("bookie", "Bet123");
-        return super.checkBookie(model);
+        session.setAttribute("bookie", "Bet123");
+        return super.checkBookie(model, session);
     }
 
     @RequestMapping(value = "/bet-in-Bet123/Basketball", method = RequestMethod.GET)
