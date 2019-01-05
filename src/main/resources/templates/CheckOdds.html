@@ -12,11 +12,11 @@
 </ul>
 <br>
 <form th:action="@{'/bet-in-' + ${bookie} + '/' + ${result} + '/placeBet'}" th:object="${betinfo}" method="post">
-    <label for="selection">Please select which one you want to bet on (No Tie for basketball match): </label>
+    <label for="selection">Please select which one you want to bet on: </label>
     <select required class="selection" name="selection">
         <option value="">Select:</option>
         <option value ="home">Home Team Win</option>
-        <option value ="tie">Tie</option>
+        <option th:if="${result} == 'BasketBall'" !=BasketBall value ="tie">Tie</option>
         <option value ="visiting">Visiting Team Win</option>
     </select><br>
     <label for="amount">Bet Amount:</label>
