@@ -22,35 +22,40 @@ public class Bet123Controller extends GeneralBookieController {
         return super.checkBookie(model,session,bookie);
     }
 
-    @RequestMapping(value = "/bet-in-Bet123/Basketball", method = RequestMethod.GET)
+    @RequestMapping(value = "/Bet123/Basketball", method = RequestMethod.GET)
     public String bookieGetBasketball(Model model) {
         return super.bookieGetBasketball(model, bookie);
     }
 
-    @RequestMapping(value = "/bet-in-Bet123/Basketball/{hrefInfo}", method = RequestMethod.GET)
+    @RequestMapping(value = "/Bet123/Basketball/{hrefInfo}", method = RequestMethod.GET)
     public String bookieCheckBasketballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
         return super.bookieCheckBasketballOdds(hrefInfo, model, session,bookie, oddCalcValue);
     }
 
-    @RequestMapping(value = "/bet-in-Bet123/Basketball/placeBet", method = RequestMethod.POST)
+    @RequestMapping(value = "/Bet123/Basketball/placeBet", method = RequestMethod.POST)
     public String bookiePlaceBetBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                            HttpSession session) {
         return super.bookiePlaceBetBasketball(betInfo, model, session, bookie);
     }
 
-    @RequestMapping(value = "/bet-in-Bet123/Football", method = RequestMethod.GET)
+    @RequestMapping(value = "/Bet123/Football", method = RequestMethod.GET)
     public String bookieGetFootball(Model model) {
         return super.bookieGetFootball(model, bookie);
     }
 
-    @RequestMapping(value = "/bet-in-Bet123/Football/{hrefInfo}", method = RequestMethod.GET)
+    @RequestMapping(value = "/Bet123/Football/{hrefInfo}", method = RequestMethod.GET)
     public String bookieCheckFootballOdds(@PathVariable("hrefInfo") String hrefInfo, Model model, HttpSession session) {
         return super.bookieCheckFootballOdds(hrefInfo, model, session, bookie, oddCalcValue);
     }
 
-    @RequestMapping(value = "/bet-in-Bet123/Football/placeBet", method = RequestMethod.POST)
+    @RequestMapping(value = "/Bet123/Football/placeBet", method = RequestMethod.POST)
     public String bookiePlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                          HttpSession session) {
         return super.bookiePlaceBetFootball(betInfo, model, session, bookie);
+    }
+
+    @RequestMapping(value = "/Bet123/bets", method = RequestMethod.GET)
+    public String bookieViewBets(Model model, HttpSession session) {
+        return super.bookieViewBets(model, session, bookie);
     }
 }

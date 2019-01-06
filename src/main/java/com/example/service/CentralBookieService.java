@@ -224,6 +224,10 @@ public class CentralBookieService implements BookieService {
       document.put("odd", betInfo.getOdd());
       bDB.getBetsTable(bookie).insert(document);
 
+      return getBetInfoList(bookie);
+   }
+
+   public List<BetInfo> getBetInfoList(String bookie) {
       /**** Find whether the rest bets and return****/
       BasicDBObject searchQuery = new BasicDBObject();
       searchQuery.append("email", userEmail);
