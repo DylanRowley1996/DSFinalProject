@@ -20,7 +20,7 @@ The central bookie controller.
 @date 21/11/2018
  */
 @Controller
-public class BookieController {
+public class CentralBookieController {
 
    @Autowired
    private CentralBookieService cbs;
