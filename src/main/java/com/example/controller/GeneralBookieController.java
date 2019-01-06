@@ -36,7 +36,7 @@ public class GeneralBookieController {
    private OddSpecialistService osl;
 
    /*
-   The GET method to check bet123
+   The GET method to check bookie
     */
    public String checkBookie(Model model, HttpSession session, String bookie) {
        model.addAttribute("bookie", bookie);
