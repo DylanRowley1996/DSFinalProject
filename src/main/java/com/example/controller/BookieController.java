@@ -92,8 +92,8 @@ public class BookieController {
       if (result) {
          session.setAttribute("Auth", authInfo);
          this.authInfo = authInfo;
+         model.addAttribute("result", cbs.getUsername(authInfo));
       }
-      model.addAttribute("result", cbs.getUsername(authInfo));
 
       // Send the email address to all the bookie companies
 
