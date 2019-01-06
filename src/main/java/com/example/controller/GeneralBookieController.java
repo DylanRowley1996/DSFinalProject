@@ -97,7 +97,7 @@ public class GeneralBookieController {
 
    public String bookiePlaceBetBasketball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session, String bookie) {
-
+      model.addAttribute("bookie", bookie);
        // Does player have sufficient funds? This will determine the page rendered
       if(hasSufficientFunds(betInfo.getAmount(), cbs.getBalance(bookie))){
          session.setAttribute("sufficientFunds", true);
@@ -105,10 +105,10 @@ public class GeneralBookieController {
       }
       else{
          session.setAttribute("sufficientFunds", false);
+         return "Bets";
       }
 
-       model.addAttribute("bookie", bookie);
-       String matchInfo = (String) session.getAttribute("matchInfo");
+      String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
       if (betInfo.getSelection().equals("null") || betInfo.getSelection().equals("tie") || matchInfo.equals("null"))   return "error";
       else {
@@ -179,7 +179,7 @@ all bookie companies and events
 
    public String bookiePlaceBetFootball(@ModelAttribute(value = "betinfo") BetInfo betInfo, Model model,
                                                HttpSession session, String bookie) {
-
+      model.addAttribute("bookie", bookie);
       // Does player have sufficient funds? This will determine the page rendered
       if(hasSufficientFunds(betInfo.getAmount(), cbs.getBalance(bookie))){
          session.setAttribute("sufficientFunds", true);
@@ -187,9 +187,9 @@ all bookie companies and events
       }
       else{
          session.setAttribute("sufficientFunds", false);
+         return "Bets";
       }
 
-       model.addAttribute("bookie", bookie);
       String matchInfo = (String) session.getAttribute("matchInfo");
       List<Double> odds= (List<Double>) session.getAttribute("odds");
       if (betInfo.getSelection().equals("null") || matchInfo.equals("null"))   return "error";
