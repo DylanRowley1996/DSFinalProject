@@ -1,0 +1,4 @@
+Deployment of the application requires two services to be installed and running; MongoDB and ActiveMQ.
+Once those services are running the application is started by running the class DsBookieBusinessApplication,
+found in src/main/java/com/example.
+The running application can be accessed in a browser at http://localhost:8080
