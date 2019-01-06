@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.domain.UserInfo;
 import com.example.service.CentralBookieService;
 import com.example.domain.AuthInfo;
+import com.example.service.GeneralBookieService;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,8 @@ public class CentralBookieController {
 
    @Autowired
    private CentralBookieService cbs;
+   @Autowired
+   private GeneralBookieService gbs;
 
    private AuthInfo authInfo;
 
@@ -134,11 +137,11 @@ public class CentralBookieController {
    public String processPayment(Model model, HttpSession session, @ModelAttribute(value = "amount") double amount) {
 
       // Update the balance.
-      cbs.updateBalance(this.authInfo, session.getAttribute("bookie").toString(), amount);
+      gbs.updateBalance(this.authInfo, session.getAttribute("bookie").toString(), amount);
 
       //Set-up model for bookie.html page.
       model.addAttribute("bookie", session.getAttribute("bookie"));
-      model.addAttribute("balance", cbs.getBalance(session.getAttribute("bookie").toString()));
+      model.addAttribute("balance", gbs.getBalance(session.getAttribute("bookie").toString()));
 
       return "bookie";
 

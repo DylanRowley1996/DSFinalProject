@@ -4,7 +4,7 @@ import com.example.domain.AuthInfo;
 import com.example.domain.BasketballMatchInfo;
 import com.example.domain.BetInfo;
 import com.example.domain.FootballMatchInfo;
-import com.example.service.CentralBookieService;
+import com.example.service.GeneralBookieService;
 import com.example.service.OddSpecialistService;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.jms.Destination;
 import javax.servlet.http.HttpSession;
@@ -30,7 +28,7 @@ import java.util.Map;
 public class GeneralBookieController {
 
    @Autowired
-   private CentralBookieService cbs;
+   private GeneralBookieService gbs;
 
    @Autowired
    private OddSpecialistService osl;
@@ -40,16 +38,16 @@ public class GeneralBookieController {
     */
    public String checkBookie(Model model, HttpSession session, String bookie) {
        model.addAttribute("bookie", bookie);
-       model.addAttribute("balance", cbs.getBalance(bookie));
+       model.addAttribute("balance", gbs.getBalance(bookie));
       /*
       Notice that we need to send out and get info before the next step
       otherwise it will not work
       */
 
       Destination destination = new ActiveMQQueue("footballMatches.eventOrganiser");
-      cbs.sendToGetEvents(destination, "football");
+      gbs.sendToGetEvents(destination, "football");
       Destination destination2 = new ActiveMQQueue("basketballMatches.eventOrganiser");
-      cbs.sendToGetEvents(destination2, "basketball");
+      gbs.sendToGetEvents(destination2, "basketball");
       return "bookie";
    }
 
@@ -62,7 +60,7 @@ public class GeneralBookieController {
        model.addAttribute("bookie", bookie);
        model.addAttribute("result","Basketball");
 
-      List<BasketballMatchInfo> matchesList = cbs.getBasketballMatchesList();
+      List<BasketballMatchInfo> matchesList = gbs.getBasketballMatchesList();
       // Create a map to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
       for (BasketballMatchInfo matchInfo : matchesList) {
@@ -99,9 +97,9 @@ public class GeneralBookieController {
                                                HttpSession session, String bookie) {
       model.addAttribute("bookie", bookie);
        // Does player have sufficient funds? This will determine the page rendered
-      if(hasSufficientFunds(betInfo.getAmount(), cbs.getBalance(bookie))){
+      if(hasSufficientFunds(betInfo.getAmount(), gbs.getBalance(bookie))){
          session.setAttribute("sufficientFunds", true);
-         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
+         gbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
       }
       else{
          session.setAttribute("sufficientFunds", false);
@@ -124,7 +122,7 @@ public class GeneralBookieController {
                betInfo.setOdd(0.0);
                break;
          }
-         model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
+         model.addAttribute("betsTable", gbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet has been placed, here are all your bets.");
       }
       return "Bets";
@@ -139,7 +137,7 @@ all bookie companies and events
        model.addAttribute("bookie", bookie);
        model.addAttribute("result","Football");
 
-      List<FootballMatchInfo> footballMatchesList = cbs.getFootballMatchesList();
+      List<FootballMatchInfo> footballMatchesList = gbs.getFootballMatchesList();
       // Create a map to store all the matches info for particular event
       Map<String, String> currentMatchesMap = new HashMap<>();
       for (FootballMatchInfo matchInfo : footballMatchesList) {
@@ -181,9 +179,9 @@ all bookie companies and events
                                                HttpSession session, String bookie) {
       model.addAttribute("bookie", bookie);
       // Does player have sufficient funds? This will determine the page rendered
-      if(hasSufficientFunds(betInfo.getAmount(), cbs.getBalance(bookie))){
+      if(hasSufficientFunds(betInfo.getAmount(), gbs.getBalance(bookie))){
          session.setAttribute("sufficientFunds", true);
-         cbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
+         gbs.updateBalance((AuthInfo)session.getAttribute("Auth"),bookie,-betInfo.getAmount());
       }
       else{
          session.setAttribute("sufficientFunds", false);
@@ -209,7 +207,7 @@ all bookie companies and events
                betInfo.setOdd(0.0);
                break;
          }
-         model.addAttribute("betsTable", cbs.placeBet(betInfo, bookie));
+         model.addAttribute("betsTable", gbs.placeBet(betInfo, bookie));
          model.addAttribute("result", "Your bet is placed, here are all your bets.");
       }
       return "Bets";
@@ -217,7 +215,7 @@ all bookie companies and events
 
    public String bookieViewBets(Model model, HttpSession session, String bookie) {
       model.addAttribute("bookie", bookie);
-      model.addAttribute("betsTable", cbs.getBetInfoList(bookie));
+      model.addAttribute("betsTable", gbs.getBetInfoList(bookie));
       model.addAttribute("result", "Your bet is placed, here are all your bets.");
       session.setAttribute("sufficientFunds", true);
       return "Bets";
