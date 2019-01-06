@@ -55,7 +55,7 @@ public class Bet123Controller extends GeneralBookieController {
     }
 
     @RequestMapping(value = "/Bet123/bets", method = RequestMethod.GET)
-    public String bookieViewBets(Model model) {
-        return super.bookieViewBets(model, bookie);
+    public String bookieViewBets(Model model, HttpSession session) {
+        return super.bookieViewBets(model, session, bookie);
     }
 }

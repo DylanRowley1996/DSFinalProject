@@ -54,7 +54,7 @@ public class PatrickPowerController extends GeneralBookieController {
     }
 
     @RequestMapping(value = "/PatrickPower/bets", method = RequestMethod.GET)
-    public String bookieViewBets(Model model) {
-        return super.bookieViewBets(model, bookie);
+    public String bookieViewBets(Model model, HttpSession session) {
+        return super.bookieViewBets(model, session, bookie);
     }
 }

@@ -215,10 +215,11 @@ all bookie companies and events
       return "Bets";
    }
 
-   public String bookieViewBets(Model model, String bookie) {
+   public String bookieViewBets(Model model, HttpSession session, String bookie) {
+      model.addAttribute("bookie", bookie);
       model.addAttribute("betsTable", cbs.getBetInfoList(bookie));
       model.addAttribute("result", "Your bet is placed, here are all your bets.");
-
+      session.setAttribute("sufficientFunds", true);
       return "Bets";
    }
 
