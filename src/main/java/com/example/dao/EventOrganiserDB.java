@@ -11,7 +11,7 @@ import com.mongodb.MongoClient;
 public class EventOrganiserDB {
    // This method is used to keep the connection with the database
    public DBCollection getTable (String sport) {
-      MongoClient mongo = new MongoClient("localhost", 27017);
+      MongoClient mongo = new MongoClient("main-db", 27017);
       DB db = mongo.getDB("eventOrganiserDB");
       DBCollection table = null;
 

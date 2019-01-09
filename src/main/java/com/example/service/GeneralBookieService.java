@@ -25,7 +25,7 @@ import java.util.List;
 public class GeneralBookieService {
 
     // Create a connection to the DB.
-    private MongoClient mongo = new MongoClient("localhost", 27017);
+    private MongoClient mongo = new MongoClient("main-db", 27017);
 
     // Create a string to store user's email
     private String userEmail = null;
